@@ -3,16 +3,18 @@
 React        = require('react')
 moment       = require('moment')
 classNames   = require('classnames')
-TableActions = require('./../actions/table_actions')
 
-PropTypes = React.PropTypes
+TableActions = require('./../actions/table_actions')
 
 #-----------  React Componet Class  -----------#
 
 MonthPicker = React.createClass
 
   propTypes:
-    filterMonth: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
+    filterMonth: React.PropTypes.oneOfType([
+      React.PropTypes.object,
+      React.PropTypes.func
+    ])
 
   getDefaultProps: ->
     return {

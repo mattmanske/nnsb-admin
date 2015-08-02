@@ -7,6 +7,7 @@
     "jquery": "^2.1.4",
     "moment": "^2.10.6",
     "react-bootstrap-daterangepicker": "^0.2.8",
+    "react-bootstrap-modal": "^1.2.1",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

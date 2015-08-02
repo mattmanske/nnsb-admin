@@ -4,10 +4,12 @@ $      = require('jquery')
 React  = require('react')
 moment = require('moment')
 
-Store           = require('./stores/table_store')
-DataTable       = require('./components/data_table')
-MonthPicker     = require('./components/month_picker')
 DateRangePicker = require('react-bootstrap-daterangepicker')
+
+Store       = require('./stores/table_store')
+DataTable   = require('./components/data_table')
+MonthPicker = require('./components/month_picker')
+ShowModal   = require('./components/show_modal')
 
 #-----------  React Componet Class  -----------#
 
@@ -52,6 +54,8 @@ PageWrapper = React.createClass
           tableHeight={this.state.tableHeight}
           filterMonth={this.state.filterMonth}
         />
+
+        <ShowModal />
       </div>
     )
 
