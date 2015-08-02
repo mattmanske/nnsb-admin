@@ -14,6 +14,8 @@ DateRangePicker = require('react-bootstrap-daterangepicker')
 PageWrapper = React.createClass
 
   getInitialState: ->
+    Store.init()
+
     return {
       filterMonth : Store.getFilterMonth()
       members     : Store.getMembers()

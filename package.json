@@ -2,6 +2,7 @@
   "name": "coffee-react-browserify-gulp",
   "version": "0.0.4",
   "dependencies": {
+    "chance": "^0.7.6",
     "classnames": "^2.1.3",
     "jquery": "^2.1.4",
     "moment": "^2.10.6",

@@ -6,8 +6,9 @@
 React          = require('react')
 FixedDataTable = require('fixed-data-table')
 
-Table  = FixedDataTable.Table
-Column = FixedDataTable.Column
+Table       = FixedDataTable.Table
+Column      = FixedDataTable.Column
+ColumnGroup = FixedDataTable.ColumnGroup
 
 #-----------  React Componet Class  -----------#
 
@@ -21,16 +22,11 @@ DataTable = React.createClass
   _rowGetter: (index) ->
     return @props.shows[index]
 
-  _headerDataGetter: () ->
-    return [true]
-
-  _footerDataGetter: () ->
-    return [true]
-
   #-----------  HTML Element Render  -----------#
 
   render: ->
     memberColumns = []
+    console.log @props
 
     for member, index in @props.members
       memberColumns.push(
@@ -39,9 +35,7 @@ DataTable = React.createClass
           key={member.id}
           dataKey={member.id}
           columnData={member}
-          cellRenderer={this._getMemberCell}
-          headerRenderer={this._getMemberHeader}
-          footerRenderer={this._getMemberFooter}
+          label={member.name}
         />
       )
 
@@ -54,48 +48,60 @@ DataTable = React.createClass
         height={this.props.tableHeight}
         rowGetter={this._rowGetter}
         rowsCount={this.props.shows.length}
-        headerDataGetter={this._headerDataGetter}
-        footerDataGetter={this._footerDataGetter}
         overflowX="auto"
         overflowY="auto"
       >
-
-        <Column
-          width={100}
-          fixed={true}
-          key="show"
-          dataKey="show"
-          cellRenderer={this._getShowCell}
-          headerRenderer={this._getShowHeader}
-          footerRenderer={this._getShowFooter}
-        />
-
-        {memberColumns}
-
+        <ColumnGroup fixed={true} label="Shows">
+          <Column
+            width={133}
+            fixed={true}
+            key="name"
+            label="Show"
+            dataKey="name"
+            flexGrow={1}
+          />
+          <Column
+            width={85}
+            fixed={true}
+            key="payment"
+            label="Payment"
+            dataKey="payment"
+          />
+          <Column
+            width={85}
+            fixed={true}
+            key="booked_by"
+            label="Booked By"
+            dataKey="booked_by"
+          />
+        </ColumnGroup>
+        <ColumnGroup fixed={true} label="Members">
+          {memberColumns}
+        </ColumnGroup>
       </Table>
     )
 
-  #-----------  Member Components  -----------#
+  # #-----------  Member Components  -----------#
 
-  _getMemberCell: (cellData, cellDataKey, rowData, rowInded, columnData, width) ->
-    return (<div>{rowInded}</div>)
+  # _getMemberCell: (cellData, cellDataKey, rowData, rowInded, columnData, width) ->
+  #   return (<div>{rowInded}</div>)
 
-  _getMemberHeader: (label, cellDataKey, columnData, rowData, width) ->
-    return (<div>{columnData.name}</div>)
+  # _getMemberHeader: (label, cellDataKey, columnData, rowData, width) ->
+  #   return (<div>{columnData.name}</div>)
 
-  _getMemberFooter: (label, cellDataKey, columnData, rowData, width) ->
-    return (<div>{columnData.name}</div>)
+  # _getMemberFooter: (label, cellDataKey, columnData, rowData, width) ->
+  #   return (<div>{columnData.name}</div>)
 
-  #-----------  Show Components  -----------#
+  # #-----------  Show Components  -----------#
 
-  _getShowCell: (cellData, cellDataKey, rowData, rowInded, columnData, width) ->
-    return (<div>{rowInded}</div>)
+  # _getShowCell: (cellData, cellDataKey, rowData, rowInded, columnData, width) ->
+  #   return (<div>{rowInded}</div>)
 
-  _getShowHeader: (label, cellDataKey, columnData, rowData, width) ->
-    return (<div>{columnData.name}</div>)
+  # _getShowHeader: (label, cellDataKey, columnData, rowData, width) ->
+  #   return (<div>{columnData.name}</div>)
 
-  _getShowFooter: (label, cellDataKey, columnData, rowData, width) ->
-    return (<div>{columnData.name}</div>)
+  # _getShowFooter: (label, cellDataKey, columnData, rowData, width) ->
+  #   return (<div>{columnData.name}</div>)
 
 #-----------  Export  -----------#
 

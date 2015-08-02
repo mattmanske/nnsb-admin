@@ -1,5 +1,6 @@
 #-----------  Requirements  -----------#
 
+_            = require('underscore')
 moment       = require('moment')
 assign       = require('object-assign')
 EventEmitter = require('events').EventEmitter
@@ -13,16 +14,17 @@ CHANGE_EVENT = 'change'
 
 #-----------  Module  -----------#
 
-TableStore = assign {}, EventEmitter.prototype,
+Store = assign {}, EventEmitter.prototype,
 
   init: ->
-    data = new PersistanceLayer()
+    @_shows = new PersistanceLayer(300)
+    @_setFilters()
 
   #-----------  Setters  -----------#
 
   _setFilters: (filter_start, filter_end) ->
-    @_filterStart = filter_start || @moment().startOd('month')
-    @_filterEnd   = filter_end || @getFilterMonth().endOf('month')
+    @_filterStart = filter_start || moment().startOf('month')
+    @_filterEnd   = filter_end || moment(@_filterStart).endOf('month')
 
   #-----------  Getters  -----------#
 
@@ -37,19 +39,13 @@ TableStore = assign {}, EventEmitter.prototype,
       { id: 4, name: 'Jeff', email: '' }
       { id: 5, name: 'Hannah', email: '' }
       { id: 6, name: 'Josh P.', email: '' }
-      { id: 7, name: 'Chris.', email: '' }
+      { id: 7, name: 'Chris', email: '' }
       { id: 8, name: 'Josh K.', email: '' }
       { id: 9, name: 'Terry', email: '' }
     ]
 
   getFilteredShows: ->
-    return [
-      { id: 1, date: '2015-08-01', name: 'Alchemy', payment: '$500', booked_by: null }
-      { id: 2, date: '2015-08-02', name: 'Alchemy', payment: '$600', booked_by: 3 }
-      { id: 3, date: '2015-08-03', name: 'Alchemy', payment: '$700', booked_by: 6 }
-      { id: 4, date: '2015-08-04', name: 'Alchemy', payment: '$800', booked_by: null }
-      { id: 5, date: '2015-08-05', name: 'Alchemy', payment: '$900', booked_by: 8 }
-    ]
+    return _.filter @_shows, (show) => show.date.isBetween(@_filterStart, @_filterEnd)
 
   #-----------  Change Listeners  -----------#
 
@@ -64,14 +60,14 @@ TableStore = assign {}, EventEmitter.prototype,
 
 #----------  Event Dispatchers  -----------#
 
-TableStore.dispatchToken = TableDispatcher.register (action) ->
+Store.dispatchToken = TableDispatcher.register (action) ->
 
   switch action.type
 
     when ActionTypes.CHANGE_FILTERS
-      TableStore._setFilters(action.startDate)
-      TableStore._emitChange()
+      Store._setFilters(action.startDate)
+      Store._emitChange()
 
 #-----------  Export  -----------#
 
-module.exports = TableStore
+module.exports = Store
