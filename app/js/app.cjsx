@@ -20,8 +20,8 @@ PageWrapper = React.createClass
       filterMonth : Store.getFilterMonth()
       members     : Store.getMembers()
       shows       : Store.getFilteredShows()
-      tableHeight : 300
-      tableWidth  : 1000
+      tableHeight : 500
+      tableWidth  : 1250
     }
 
   #-----------  Event Handlers  -----------#
@@ -50,6 +50,7 @@ PageWrapper = React.createClass
           members={this.state.members}
           tableWidth={this.state.tableWidth}
           tableHeight={this.state.tableHeight}
+          filterMonth={this.state.filterMonth}
         />
       </div>
     )

@@ -9,6 +9,8 @@ UtilityFunctions =
   # ---------------
 
    currencyFormater: (number) ->
+     return '–' unless number
+
      decimalplaces     = 0
      decimalcharacter  = ''
      thousandseparater = ','
