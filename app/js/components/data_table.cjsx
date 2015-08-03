@@ -8,6 +8,7 @@ classNames = require('classnames')
 
 React          = require('react')
 FixedDataTable = require('fixed-data-table')
+MemberCell     = require('./member_cell')
 
 Store            = require('./../stores/table_store')
 TableActions     = require('./../actions/table_actions')
@@ -147,8 +148,15 @@ DataTable = React.createClass
   #-----------  Member Components  -----------#
 
   _getMemberCell: (cellData, cellDataKey, rowData, rowIndex, columnData, width) ->
-    is_participant = _.contains(rowData.participants, cellDataKey)
-    return (<div><input type="checkbox" checked={is_participant} readOnly={true} /></div>)
+    return (
+      <MemberCell
+        showID={rowData.id}
+        memberID={cellDataKey}
+        isParticpant={_.contains(rowData.participants, cellDataKey)}
+        isBooker={rowData.booked_by == cellDataKey}
+        isPaid={rowData.is_paid}
+      />
+    )
 
   _getMemberFooter: (label, cellDataKey, columnData, rowData, width) ->
     return (

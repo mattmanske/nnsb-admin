@@ -24,21 +24,35 @@ PageWrapper = React.createClass
       shows       : Store.getFilteredShows()
       tableHeight : 500
       tableWidth  : 1250
+      renderPage  : false
     }
 
-  #-----------  Event Handlers  -----------#
+  #-----------  Mount / Unmount  -----------#
 
   componentDidMount: ->
     Store.addChangeListener(@_onFilterChange)
+    $(window).on 'resize', @_onResize
+    @_updateSizing()
 
   componentWillUnmount: ->
     Store.removeChangeListener(@_onFilterChange)
+
+  #-----------  Event Handlers  -----------#
+
+  _onResize: ->
+    clearTimeout(@_updateTimer)
+    @_updateTimer = setTimeout(@_updateSizing, 16)
 
   _onFilterChange: ->
     @setState
       filterMonth : Store.getFilterMonth()
       members     : Store.getMembers()
       shows       : Store.getFilteredShows()
+
+  _updateSizing: ->
+    @setState
+      tableWidth  : $('#content').width()
+      renderPage  : true
 
   #-----------  HTML Element Render  -----------#
 

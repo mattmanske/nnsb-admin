@@ -14,6 +14,12 @@ TableActions =
       type      : ActionTypes.CHANGE_FILTERS
       startDate : start_date
 
+  toggleParticipant: (member_id, show_id) ->
+    TableDispatcher.dispatch
+      type     : ActionTypes.TOGGLE_PARTICIPANT
+      memberID : member_id
+      showID   : show_id
+
   toggleIsPaid: (show_id) ->
     TableDispatcher.dispatch
       type   : ActionTypes.TOGGLE_IS_PAID

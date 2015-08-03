@@ -35,7 +35,7 @@ class PersistanceLayer
         payment      : _.sample([250, 350, 600, 1250, 1700, 150, 375, 425, 500])
         booked_by    : _.sample(['0', '3', '4', '5', '6', '7', '8'])
         participants : @_generateParticipants()
-        is_paid      : _.sample([true, false])
+        is_paid      : false #_.sample([true, false])
       }
     return _.sortBy(shows, (show) -> return show.date)
 

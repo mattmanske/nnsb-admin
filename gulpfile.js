@@ -5,7 +5,7 @@ var gutil = require('gulp-util');
 
 var livereload = require('gulp-livereload');
 var connect = require('connect');
-
+var sass = require('gulp-sass');
 var rename = require('gulp-rename');
 var browserify = require('browserify');
 var watchify = require('watchify');
@@ -40,6 +40,16 @@ gulp.task('vendor', function () {
 gulp.task('html', function () {
     return gulp.src(htmlFiles).
         pipe(gulp.dest(htmlBuild));
+});
+
+gulp.task('sass', function () {
+  gulp.src('app/css/**/*.sass')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('dist/styles'));
+});
+
+gulp.task('sass:watch', function () {
+  gulp.watch('app/css/**/*.sass', ['sass']);
 });
 
 function compileScripts(watch) {
@@ -96,7 +106,7 @@ function initWatch(files, task) {
 /**
  * Run default task
  */
-gulp.task('default', ['vendor', 'server'], function () {
+gulp.task('default', ['vendor', 'sass', 'server', 'sass:watch'], function () {
     var lrServer = livereload(lrPort);
     var reloadPage = function (evt) {
         lrServer.changed(evt.path);

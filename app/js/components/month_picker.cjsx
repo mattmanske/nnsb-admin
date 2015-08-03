@@ -50,11 +50,9 @@ MonthPicker = React.createClass
         <button type="button" className={btn_classes} onClick={this._prevMonth}>
           <i className="glyphicon glyphicon-chevron-left"></i>
         </button>
-
         <button type="button" className={next_classes} onClick={this._nextMonth}>
           <i className="glyphicon glyphicon-chevron-right"></i>
         </button>
-
         <span>{month_display}</span>
       </div>
     )
