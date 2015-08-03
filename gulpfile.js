@@ -102,6 +102,10 @@ function initWatch(files, task) {
     }
 }
 
+gulp.task('deploy', function() {
+  return gulp.src('dist/**/*')
+    .pipe(ghPages());
+});
 
 /**
  * Run default task
