@@ -11,6 +11,7 @@ var browserify = require('browserify');
 var watchify = require('watchify');
 var reactify = require('coffee-reactify');
 var source = require('vinyl-source-stream');
+var ghPages = require('gulp-gh-pages');
 
 /** Config variables */
 var serverPort = 8888;
