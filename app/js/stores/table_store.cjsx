@@ -71,17 +71,35 @@ Store = assign {}, EventEmitter.prototype,
 
     return booking_cut + playing_cut
 
+  getLLCPaymentTotal: (member_id = '0') ->
+    booking_cut = _.reduce(@_getMemberBookedShows(member_id), (memo, show) =>
+      booking_payment = @_getBookedPayment(show)
+      return memo + booking_payment
+    , 0)
+
+    llc_cut = _.reduce(@getFilteredShows(), (memo, show) =>
+      llc_payment = @_getLLCCut(show)
+      return memo + llc_payment
+    , 0)
+
+    return booking_cut + llc_cut
+
+
   #-----------  Calculations  -----------#
 
   _getBookedPayment: (show) ->
     percentage = switch
-      when show.payment <= 500  then 0.1
-      when show.payment <= 1200 then 0.2
-      when show.payment > 1200  then 0.3
+      when show.payment <= 300 then 0.05
+      when show.payment <= 1000 then 0.10
+      when show.payment > 1000 then 0.15
+    return (show.payment * percentage)
+
+  _getLLCCut: (show) ->
+    percentage = 0.15
     return (show.payment * percentage)
 
   _getPlayingPayment: (show) ->
-    total_split = show.payment - @_getBookedPayment(show)
+    total_split = show.payment - @_getBookedPayment(show) - @_getLLCCut(show)
     return (total_split / show.participants.length)
 
   #-----------  Calculation Filters  -----------#

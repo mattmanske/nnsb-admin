@@ -197,7 +197,7 @@ DataTable = React.createClass
     return (
       <div>
         <small>NNSB: ({Store.getMemberShowsTotal()})</small>
-        <br />{currencyFormater(Store.getMemberPaymentTotal())}
+        <br />{currencyFormater(Store.getLLCPaymentTotal())}
       </div>
     )
 
