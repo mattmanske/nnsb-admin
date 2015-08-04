@@ -84,7 +84,6 @@ Store = assign {}, EventEmitter.prototype,
 
     return booking_cut + llc_cut
 
-
   #-----------  Calculations  -----------#
 
   _getBookedPayment: (show) ->
