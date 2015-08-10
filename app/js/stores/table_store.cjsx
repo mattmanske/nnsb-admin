@@ -127,10 +127,11 @@ Store = assign {}, EventEmitter.prototype,
   #-----------  Event Responders  -----------#
 
   _toggleParticipant: (member_id, show_id) ->
-    if _.contains(@_shows[show_id].participants, member_id)
-      @_shows[show_id].participants = _.without(@_shows[show_id].participants, member_id)
+    id = parseInt(member_id)
+    if _.contains(@_shows[show_id].participants, id)
+      @_shows[show_id].participants = _.without(@_shows[show_id].participants, id)
     else
-      @_shows[show_id].participants.push(member_id)
+      @_shows[show_id].participants.push(id)
 
   _toggleIsPaid: (show_id) ->
     @_shows[show_id].is_paid = true

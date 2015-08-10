@@ -8,7 +8,9 @@
     "gulp-sass": "^2.0.4",
     "jquery": "^2.1.4",
     "moment": "^2.10.6",
+    "node-bourbon": "^4.2.3",
     "react-bootstrap-daterangepicker": "^0.2.8",
+    "react-bootstrap-datetimepicker": "0.0.18",
     "react-bootstrap-modal": "^1.2.1",
     "underscore": "^1.8.3"
   },

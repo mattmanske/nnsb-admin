@@ -21,10 +21,12 @@ var lrPort = 35731;
 /** File paths */
 var dist = 'dist';
 
+var bourbon = require('node-bourbon').includePaths;
 var htmlFiles = 'app/**/*.html';
 var htmlBuild = dist;
 
 var jsxFiles = 'app/js/**/*.jsx';
+var sassFiles = 'app/css/**/*.sass';
 
 var vendorFiles = [
     'bower_components/react/react-with-addons.js'];
@@ -44,13 +46,15 @@ gulp.task('html', function () {
 });
 
 gulp.task('sass', function () {
-  gulp.src('app/css/**/*.sass')
-    .pipe(sass().on('error', sass.logError))
+  gulp.src(sassFiles)
+    .pipe(sass({
+      includePaths: ['sass'].concat(bourbon)
+    }).on('error', sass.logError))
     .pipe(gulp.dest('dist/styles'));
 });
 
 gulp.task('sass:watch', function () {
-  gulp.watch('app/css/**/*.sass', ['sass']);
+  gulp.watch(sassFiles, ['sass']);
 });
 
 function compileScripts(watch) {

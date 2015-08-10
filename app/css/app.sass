@@ -1,3 +1,7 @@
+@import "bourbon"
+
+/*-----------  Body  -----------*/
+
 body
   padding: 50px
 
@@ -18,3 +22,87 @@ body
 
     input[type="checkbox"]
       pointer-events: none
+
+/*-----------  Modals  -----------*/
+
+$gutter: 2.25em
+$gutterLg: 3.75em
+$modalSpeed: 0.25s
+
+.nnsb-modal
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  z-index: 100000
+  position: fixed
+  overflow-x: auto
+  overflow-y: scroll
+  padding: $gutterLg $gutter $gutter
+  background-color: rgba(0,0,0,0.45)
+  @include transition(all $modalSpeed ease-out)
+
+  .nnsb-modal__block
+    opacity: 1
+    border: none
+    margin: 0 auto 0
+    max-width: 30em
+    padding: $gutter
+    border-radius: 5px
+    background-color: white
+    box-shadow: 3px 3px 12px rgba(0,0,0,0.20)
+    @include transition(all $modalSpeed ease-in-out)
+
+    .nnsb-modal__close
+      top: 0.67em
+      right: 0.67em
+      font-size: 1.2em
+      color: lightgray
+      position: absolute
+      @include transition()
+
+      &:before
+        vertical-align: super
+
+      &:hover
+        color: red
+        cursor: pointer
+
+    p
+      color: gray
+      font-size: 92%
+      line-height: 150%
+      margin: 2em 0 1.5em
+
+    form
+      margin-top: 0.75em
+
+  /*-----------  Animations  -----------*/
+
+  &.nnsb-modal--animation-enter
+    background-color: rgba(0,0,0,0)
+
+    .nnsb-modal__block
+      opacity: 0
+      margin-top: -3em
+
+    &.nnsb-modal--animation-enter-active
+      background-color: rgba(0,0,0,0.45)
+
+      .nnsb-modal__block
+        opacity: 1
+        margin-top: 0
+
+  &.nnsb-modal--animation-leave
+    background-color: rgba(0,0,0,0.45)
+
+    .nnsb-modal__block
+      opacity: 1
+      margin-top: 0
+
+    &.nnsb-modal--animation-leave-active
+      background-color: rgba(0,0,0,0)
+
+      .nnsb-modal__block
+        opacity: 0
+        margin-top: -3em

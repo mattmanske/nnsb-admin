@@ -3,20 +3,19 @@
 # for documentation on the Fixed Data Table components
 # see https://facebook.github.io/fixed-data-table/
 
-_          = require('underscore')
-classNames = require('classnames')
-
-React          = require('react')
-FixedDataTable = require('fixed-data-table')
-MemberCell     = require('./member_cell')
+_                = require('underscore')
+React            = require('react')
+classNames       = require('classnames')
+FixedDataTable   = require('fixed-data-table')
 
 Store            = require('./../stores/table_store')
 TableActions     = require('./../actions/table_actions')
 currencyFormater = require('./../utils/utility_functions').currencyFormater
 
-Table       = FixedDataTable.Table
-Column      = FixedDataTable.Column
-ColumnGroup = FixedDataTable.ColumnGroup
+Table            = FixedDataTable.Table
+Column           = FixedDataTable.Column
+ColumnGroup      = FixedDataTable.ColumnGroup
+MemberCell       = require('./member_cell')
 
 #-----------  React Componet Class  -----------#
 
@@ -31,6 +30,7 @@ DataTable = React.createClass
       React.PropTypes.object,
       React.PropTypes.func
     ])
+    editShow    : React.PropTypes.func
 
   #-----------  Table Data Grabs  -----------#
 
@@ -148,8 +148,10 @@ DataTable = React.createClass
   #-----------  Member Components  -----------#
 
   _getMemberCell: (cellData, cellDataKey, rowData, rowIndex, columnData, width) ->
+    key = @props.filterMonth + '_' + cellDataKey
     return (
       <MemberCell
+        key={key}
         showID={rowData.id}
         memberID={cellDataKey}
         isParticpant={_.contains(rowData.participants, cellDataKey)}
@@ -169,7 +171,13 @@ DataTable = React.createClass
   #-----------  Show Components  -----------#
 
   _getShowPaidCell: (cellData, cellDataKey, rowData, rowIndex, columnData, width) ->
-    return (<div><input type="checkbox" defaultChecked={rowData.is_paid} disabled={rowData.is_paid} value={rowData.id} onChange={this._toggleIsPaid} /></div>)
+    return (
+      <div>
+        <span className="btn btn-link btn-xs" onClick={this.props.editShow.bind(null,rowData)}>
+          <i className="glyphicon glyphicon-cog"></i>
+        </span>
+      </div>
+    )
 
   _getShowPaidHeader: (label, cellDataKey, columnData, rowData, width) ->
     is_paid = (Store.getNumberPaid() == @props.shows.length)
