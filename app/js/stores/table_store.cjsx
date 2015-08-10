@@ -16,14 +16,14 @@ CHANGE_EVENT = 'change'
 
 Store = assign {}, EventEmitter.prototype,
 
-  _shows   : []
-  _members : []
+  _shows     : []
+  _members   : []
 
   init: ->
-    data = new PersistanceLayer(50)
+    console.log PersistanceLayer.getMembers()
 
-    @_shows = _.indexBy(data.getShows(), 'id')
-    @_members = _.indexBy(data.getMembers(), 'id')
+    @_shows = _.indexBy(PersistanceLayer.getShows(), 'id')
+    @_members = _.indexBy(PersistanceLayer.getMembers(), 'id')
     @_setFilters()
 
   #-----------  Setters  -----------#
@@ -31,7 +31,7 @@ Store = assign {}, EventEmitter.prototype,
   _setFilters: (filter_start, filter_end) ->
     @_filterStart   = filter_start || moment().startOf('month')
     @_filterEnd     = filter_end || moment(@_filterStart).endOf('month')
-    @_filteredShows = _.filter(@_shows, (show) => return show.date.isBetween(@_filterStart, @_filterEnd))
+    @_filteredShows = [] # _.filter(@_shows, (show) => return show.date.isBetween(@_filterStart, @_filterEnd))
 
   #-----------  Filter Getters  -----------#
 
@@ -148,6 +148,14 @@ Store.dispatchToken = TableDispatcher.register (action) ->
 
     when ActionTypes.CHANGE_FILTERS
       Store._setFilters(action.startDate)
+      Store._emitChange()
+
+    when ActionTypes.CREATE_SHOW
+      PersistanceLayer.createShow(action.showData)
+      Store._emitChange()
+
+    when ActionTypes.UPDATE_SHOW
+      PersistanceLayer.updateShow(action.showID, action.showData)
       Store._emitChange()
 
     when ActionTypes.TOGGLE_PARTICIPANT

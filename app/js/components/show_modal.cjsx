@@ -29,6 +29,7 @@ ShowModal = React.createClass
   componentWillReceiveProps: (new_props) ->
     show = new_props.currentShow
     formatted_date = if show.date then show.date.format('YYYY-MM-DD') else moment().format('YYYY-MM-DD')
+
     @setState {
       name      : show.name
       date      : formatted_date
@@ -39,8 +40,17 @@ ShowModal = React.createClass
   #-----------  Event Handlers  -----------#
 
   _saveAndClose: ->
-    console.log @state
-    # TableActions.addNewShow()
+    show_data = {
+      date      : @state.date
+      name      : @state.name
+      payment   : @state.payment
+      booked_by : @state.booked_by
+    }
+
+    if @props.currentShow.id
+      TableActions.updateShow(@props.currentShow.id, show_data)
+    else
+      TableActions.createShow(show_data)
 
   #-----------  HTML Element Render  -----------#
 

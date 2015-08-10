@@ -1,27 +1,33 @@
 #-----------  Requirements  -----------#
 
-_      = require('underscore')
-chance = require('chance').Chance()
-moment = require('moment')
+_        = require('underscore')
+chance   = require('chance').Chance()
+moment   = require('moment')
+Firebase = require('firebase')
 
 #-----------  Module  -----------#
 
-class PersistanceLayer
+PersistanceLayer =
 
-  _shows   : []
-  _members : []
-
-  constructor: (number_of_shows) ->
-    @_shows   = @_fetchShows(number_of_shows)
-    @_members = @_fetchMembers()
+  _shows   : new Firebase('https://nnsb-calculator.firebaseio.com/shows/')
+  _members : new Firebase('https://nnsb-calculator.firebaseio.com/members/')
 
   #-----------  Getters  -----------#
 
   getShows: ->
-    return @_shows
+    return @_shows.once 'value', (data) -> return data
 
   getMembers: ->
-    return @_members
+    return @_members.once 'value', (data) -> return data
+
+  #-----------  Setters  -----------#
+
+  createShow: (data) ->
+    default_show = { date: null, name: null, payment: 0, booked_by: 0, participants: [], is_paid: false }
+    @_shows.push(_.defaults(data, default_show))
+
+  updateShow: (data) ->
+    false
 
   #-----------  Fetchers  -----------#
 

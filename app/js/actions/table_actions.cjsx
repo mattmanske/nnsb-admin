@@ -14,6 +14,17 @@ TableActions =
       type      : ActionTypes.CHANGE_FILTERS
       startDate : start_date
 
+  createShow: (show_data) ->
+    TableDispatcher.dispatch
+      type     : ActionTypes.CREATE_SHOW
+      showData : show_data
+
+  updateShow: (show_id, show_data) ->
+    TableDispatcher.dispatch
+      type     : ActionTypes.UPDATE_SHOW
+      showID   : show_id
+      showData : show_data
+
   toggleParticipant: (member_id, show_id) ->
     TableDispatcher.dispatch
       type     : ActionTypes.TOGGLE_PARTICIPANT
