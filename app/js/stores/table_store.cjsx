@@ -6,8 +6,8 @@ assign       = require('object-assign')
 Firebase     = require('firebase')
 EventEmitter = require('events').EventEmitter
 
-Constants        = require('./../constants/constants')
-TableDispatcher  = require('./../dispatchers/table_dispatcher')
+Constants       = require('./../constants/constants')
+TableDispatcher = require('./../dispatchers/table_dispatcher')
 
 ActionTypes  = Constants.ActionTypes
 CHANGE_EVENT = 'change'

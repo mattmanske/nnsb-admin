@@ -1,0 +1,1 @@
+curl https://nnsb-calculator.firebaseio.com/.json?format=export
