@@ -3,11 +3,11 @@
 _            = require('underscore')
 moment       = require('moment')
 assign       = require('object-assign')
+Firebase     = require('firebase')
 EventEmitter = require('events').EventEmitter
 
 Constants        = require('./../constants/constants')
 TableDispatcher  = require('./../dispatchers/table_dispatcher')
-PersistanceLayer = require('./../utils/persistance_layer')
 
 ActionTypes  = Constants.ActionTypes
 CHANGE_EVENT = 'change'
@@ -16,22 +16,46 @@ CHANGE_EVENT = 'change'
 
 Store = assign {}, EventEmitter.prototype,
 
-  _shows     : []
-  _members   : []
+  _shows         : []
+  _members       : []
+  _filteredShows : []
+
+  _showsDB   : new Firebase('https://nnsb-calculator.firebaseio.com/shows/')
+  _membersDB : new Firebase('https://nnsb-calculator.firebaseio.com/members/')
+
+  _default_show : {
+    date: null
+    name: null
+    payment: 0
+    booked_by: 0
+    participants: []
+    is_paid: false
+  }
+
+  #-----------  Initializer  -----------#
 
   init: ->
-    console.log PersistanceLayer.getMembers()
+    @_showsDB.on 'value', (data) =>
+      console.count 'shows'
+      @_shows = _.extend({}, data.val())
+      @_emitChange()
 
-    @_shows = _.indexBy(PersistanceLayer.getShows(), 'id')
-    @_members = _.indexBy(PersistanceLayer.getMembers(), 'id')
-    @_setFilters()
+    @_membersDB.on 'value', (data) =>
+      console.count 'members'
+      @_members = _.extend({}, data.val())
+      @_emitChange()
+
+    default_start = moment().startOf('month')
+    default_end = moment(@_filterStart).endOf('month')
+    @_setFilters(default_start, default_end)
 
   #-----------  Setters  -----------#
 
   _setFilters: (filter_start, filter_end) ->
-    @_filterStart   = filter_start || moment().startOf('month')
-    @_filterEnd     = filter_end || moment(@_filterStart).endOf('month')
-    @_filteredShows = [] # _.filter(@_shows, (show) => return show.date.isBetween(@_filterStart, @_filterEnd))
+    console.count 'filter'
+    @_filterStart   = filter_start || @_filterStart
+    @_filterEnd     = filter_end || @_filterEnd
+    @_filteredShows = _.filter(@_shows, (show) => return moment(show.date).isBetween(@_filterStart, @_filterEnd))
 
   #-----------  Filter Getters  -----------#
 
@@ -116,6 +140,7 @@ Store = assign {}, EventEmitter.prototype,
   #-----------  Change Listeners  -----------#
 
   _emitChange: ->
+    @_setFilters()
     return @emit(CHANGE_EVENT)
 
   addChangeListener: (callback) ->
@@ -126,19 +151,25 @@ Store = assign {}, EventEmitter.prototype,
 
   #-----------  Event Responders  -----------#
 
+  _createShow: (data) ->
+    @_showsDB.push(_.defaults(data, @_default_show))
+
+  _updateShow: (data) ->
+    false
+
   _toggleParticipant: (member_id, show_id) ->
-    id = parseInt(member_id)
-    if _.contains(@_shows[show_id].participants, id)
-      @_shows[show_id].participants = _.without(@_shows[show_id].participants, id)
-    else
-      @_shows[show_id].participants.push(id)
+    # id = parseInt(member_id)
+    # if _.contains(@_shows[show_id].participants, id)
+    #   @_shows[show_id].participants = _.without(@_shows[show_id].participants, id)
+    # else
+    #   @_shows[show_id].participants.push(id)
 
   _toggleIsPaid: (show_id) ->
-    @_shows[show_id].is_paid = true
+    # @_shows[show_id].is_paid = true
 
   _toggleAllIsPaid: ->
-    for id in _.map(@getFilteredShows(), (show) -> return show.id)
-      @_shows[id].is_paid = true
+    # for id in _.map(@getFilteredShows(), (show) -> return show.id)
+    #   @_shows[id].is_paid = true
 
 #----------  Event Dispatchers  -----------#
 
@@ -151,11 +182,10 @@ Store.dispatchToken = TableDispatcher.register (action) ->
       Store._emitChange()
 
     when ActionTypes.CREATE_SHOW
-      PersistanceLayer.createShow(action.showData)
-      Store._emitChange()
+      Store._createShow(action.showData)
 
     when ActionTypes.UPDATE_SHOW
-      PersistanceLayer.updateShow(action.showID, action.showData)
+      Store._updateShow(action.showID, action.showData)
       Store._emitChange()
 
     when ActionTypes.TOGGLE_PARTICIPANT

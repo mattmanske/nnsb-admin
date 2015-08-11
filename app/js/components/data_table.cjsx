@@ -23,7 +23,7 @@ DataTable = React.createClass
 
   propTypes:
     shows       : React.PropTypes.array
-    members     : React.PropTypes.object
+    members     : React.PropTypes.array
     tableWidth  : React.PropTypes.number
     tableHeight : React.PropTypes.number
     filterMonth : React.PropTypes.oneOfType([

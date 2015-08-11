@@ -1,71 +1,80 @@
-#-----------  Requirements  -----------#
+# #-----------  Requirements  -----------#
 
-_        = require('underscore')
-chance   = require('chance').Chance()
-moment   = require('moment')
-Firebase = require('firebase')
+# _        = require('underscore')
+# chance   = require('chance').Chance()
+# moment   = require('moment')
+# Firebase = require('firebase')
 
-#-----------  Module  -----------#
+# #-----------  Module  -----------#
 
-PersistanceLayer =
+# PersistanceLayer =
 
-  _shows   : new Firebase('https://nnsb-calculator.firebaseio.com/shows/')
-  _members : new Firebase('https://nnsb-calculator.firebaseio.com/members/')
+#   _shows   : new Firebase('https://nnsb-calculator.firebaseio.com/shows/')
+#   _members : new Firebase('https://nnsb-calculator.firebaseio.com/members/')
 
-  #-----------  Getters  -----------#
+#   _default : {
+#     date: null
+#     name: null
+#     payment: 0
+#     booked_by: 0
+#     participants: []
+#     is_paid: false
+#   }
 
-  getShows: ->
-    return @_shows.once 'value', (data) -> return data
+#   #-----------  Getters  -----------#
 
-  getMembers: ->
-    return @_members.once 'value', (data) -> return data
+#   getShows: ->
+#     return @_shows.once 'value', (data) -> return data
 
-  #-----------  Setters  -----------#
+#   getMembers: ->
+#     return @_members.once 'value', (data) -> return data
 
-  createShow: (data) ->
-    default_show = { date: null, name: null, payment: 0, booked_by: 0, participants: [], is_paid: false }
-    @_shows.push(_.defaults(data, default_show))
+#   #-----------  Setters  -----------#
 
-  updateShow: (data) ->
-    false
+#   createShow: (data) ->
+#     @_shows.push(_.defaults(data, @_default))
 
-  #-----------  Fetchers  -----------#
+#   updateShow: (data) ->
+#     false
 
-  _fetchShows: (number_of_shows) ->
-    shows = []
-    for index in [0...number_of_shows] by 1
-      shows.push {
-        id           : index + 1
-        date         : moment(chance.date({year: 2015}))
-        name         : _.sample(['Capitol Brewery', 'Alchemy', 'Tempest', 'Woodshed Ale House'])
-        payment      : _.sample([250, 350, 600, 1250, 1700, 150, 375, 425, 500])
-        booked_by    : _.sample(['0', '3', '4', '5', '6', '7', '8'])
-        participants : @_generateParticipants()
-        is_paid      : false #_.sample([true, false])
-      }
-    return _.sortBy(shows, (show) -> return show.date)
+#   #-----------  Fetchers  -----------#
 
-  _fetchMembers: ->
-    return [
-      { id: '1', name: 'Brian', email: '' }
-      { id: '2', name: 'Matt', email: '' }
-      { id: '3', name: 'Ela', email: '' }
-      { id: '4', name: 'Jeff', email: '' }
-      { id: '5', name: 'Hannah', email: '' }
-      { id: '6', name: 'Josh P', email: '' }
-      { id: '7', name: 'Chris', email: '' }
-      { id: '8', name: 'Josh K', email: '' }
-      { id: '9', name: 'Terry', email: '' }
-    ]
+#   _fetchShows: (number_of_shows) ->
+#     shows = []
+#     for index in [0...number_of_shows] by 1
+#       shows.push {
+#         id           : index + 1
+#         date         : moment(chance.date({year: 2015}))
+#         name         : _.sample(['Capitol Brewery', 'Alchemy', 'Tempest', 'Woodshed Ale House'])
+#         payment      : _.sample([250, 350, 600, 1250, 1700, 150, 375, 425, 500])
+#         booked_by    : _.sample(['0', '3', '4', '5', '6', '7', '8'])
+#         participants : @_generateParticipants()
+#         is_paid      : false #_.sample([true, false])
+#       }
+#     return _.sortBy(shows, (show) -> return show.date)
 
-  #-----------  Generators  -----------#
+#   _fetchMembers: ->
+#     return [
+#       { name: 'Brian', email: 'Zimmerman.Brian.G@gmail.com' }
+#       { name: 'Matt', email: 'manske.ma@gmail.com' }
+#       { name: 'Ela', email: 'elmowinski@gmail.com' }
+#       { name: 'Jeff', email: 'jeff.weiss12@gmail.com' }
+#       { name: 'Hannah', email: 'hannahvbenton@gmail.com' }
+#       { name: 'Josh P', email: 'josh.pultorak@gmail.com' }
+#       { name: 'Chris', email: 'chris.ptasnik@gmail.com' }
+#       { name: 'Josh K', email: 'jlemonsk@gmail.com' }
+#       { name: 'Terry', email: 'jtgrffn@gmail.com' }
+#       { name: 'Bob', email: 'hannahvbenton@gmail.com' }
+#     ]
 
-  _generateParticipants: ->
-    players = []
-    for index in [1.._.random(3, 9)] by 1
-      players.push _.sample(['1', '2', '3', '4', '5', '6', '7', '8', '9'])
-    return _.uniq(players)
+#   #-----------  Generators  -----------#
 
-#-----------  Export  -----------#
+#   _generateParticipants: ->
+#     players = []
+#     for index in [1.._.random(3, 9)] by 1
+#       players.push _.sample(['1', '2', '3', '4', '5', '6', '7', '8', '9'])
+#     return _.uniq(players)
 
-module.exports = PersistanceLayer
+# #-----------  Export  -----------#
+
+# module.exports = PersistanceLayer
