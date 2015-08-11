@@ -159,6 +159,9 @@ Store = assign {}, EventEmitter.prototype,
   _updateShow: (show_id, data) ->
     @_showsDB.child(show_id).update(data)
 
+  _deleteShow: (show_id) ->
+    @_showsDB.child(show_id).remove()
+
   _toggleParticipant: (member_id, show_id) ->
     participants = @getShowParticipants(show_id)
     if _.contains(participants, member_id)
@@ -189,6 +192,9 @@ Store.dispatchToken = TableDispatcher.register (action) ->
 
     when ActionTypes.UPDATE_SHOW
       Store._updateShow(action.showID, action.showData)
+
+    when ActionTypes.DELETE_SHOW
+      Store._deleteShow(action.showID)
 
     when ActionTypes.TOGGLE_PARTICIPANT
       Store._toggleParticipant(action.memberID, action.showID)

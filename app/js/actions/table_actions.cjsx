@@ -25,6 +25,11 @@ TableActions =
       showID   : show_id
       showData : show_data
 
+  deleteShow: (show_id) ->
+    TableDispatcher.dispatch
+      type   : ActionTypes.DELETE_SHOW
+      showID : show_id
+
   toggleParticipant: (member_id, show_id) ->
     TableDispatcher.dispatch
       type     : ActionTypes.TOGGLE_PARTICIPANT

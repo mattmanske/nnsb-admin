@@ -39,6 +39,15 @@ ShowModal = React.createClass
 
   #-----------  Event Handlers  -----------#
 
+  _closeModal: (evt) ->
+    @props.closeModal unless ($(evt.target).hasClass('nnsb-modal') || $(evt.target).hasClass('nnsb-modal__close'))
+
+  _deleteAndClose: ->
+    confirm = window.confirm('Are you sure you want to delete this show?')
+    if confirm
+      TableActions.deleteShow(@props.currentShow.id)
+      @props.closeModal
+
   _saveAndClose: ->
     show_data = {
       date      : @state.date
@@ -52,6 +61,8 @@ ShowModal = React.createClass
     else
       TableActions.createShow(show_data)
 
+    @props.closeModal
+
   #-----------  HTML Element Render  -----------#
 
   render: ->
@@ -60,11 +71,17 @@ ShowModal = React.createClass
     for member_id, member of @props.members
       member_options.push <option key={member_id} value={member_id}>{member.name}</option>
 
+    delete_show = (
+      <button type="button" className="btn btn-link" onClick={this._deleteAndClose}>delete</button>
+    ) if @props.currentShow.id
+
     if @props.isModalOpen
       return (
         <ReactCSSTransitionGroup transitionName="nnsb-modal--animation">
-          <div className="nnsb-modal">
+          <div className="nnsb-modal" onClick={this._closeModal}>
             <div className="nnsb-modal__block">
+              <a className="nnsb-modal__close" onClick={this._closeModal}>&times;</a>
+
               <form className="form-horizontal">
                 <div className="form-group">
                   <label className="col-sm-3 control-label">Date</label>
@@ -97,8 +114,10 @@ ShowModal = React.createClass
                 </div>
               </form>
 
-              <button type="button" className="btn btn-default" onClick={this.props.closeModal}>Close</button>
-              <button type="button" className="btn btn-primary" onClick={this._saveAndClose}>Save Changes</button>
+              <div className="nnsb-modal__buttons">
+                {delete_show}
+                <button type="button" className="btn btn-primary" onClick={this._saveAndClose}>Save Changes</button>
+              </div>
             </div>
           </div>
         </ReactCSSTransitionGroup>
