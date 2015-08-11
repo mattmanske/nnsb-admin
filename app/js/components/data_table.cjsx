@@ -39,7 +39,7 @@ DataTable = React.createClass
     return @props.shows[index]
 
   _footerDataGetter: ->
-    return [@props.filterMonth]
+    return [@props.filterMonth, @props.shows.length]
 
   _rowClassNameGetter: (index) ->
     return if @props.shows[index].is_paid then 'paid-row' else 'unpaid-row'
@@ -149,7 +149,7 @@ DataTable = React.createClass
   #-----------  Member Components  -----------#
 
   _getMemberCell: (cellData, cellDataKey, rowData, rowIndex, columnData, width) ->
-    key = @props.filterMonth + '_' + cellDataKey
+    key = @props.filterMonth + '_' + cellDataKey + '_' + @props.shows.length
     return (
       <MemberCell
         key={key}

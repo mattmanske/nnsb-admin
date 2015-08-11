@@ -40,13 +40,14 @@ ShowModal = React.createClass
   #-----------  Event Handlers  -----------#
 
   _closeModal: (evt) ->
-    @props.closeModal unless ($(evt.target).hasClass('nnsb-modal') || $(evt.target).hasClass('nnsb-modal__close'))
+    if $(evt.target).hasClass('nnsb-modal') || $(evt.target).hasClass('nnsb-modal__close')
+      @props.closeModal()
 
   _deleteAndClose: ->
     confirm = window.confirm('Are you sure you want to delete this show?')
     if confirm
       TableActions.deleteShow(@props.currentShow.id)
-      @props.closeModal
+      @props.closeModal()
 
   _saveAndClose: ->
     show_data = {
@@ -61,7 +62,7 @@ ShowModal = React.createClass
     else
       TableActions.createShow(show_data)
 
-    @props.closeModal
+    @props.closeModal()
 
   #-----------  HTML Element Render  -----------#
 

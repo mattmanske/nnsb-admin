@@ -82,10 +82,10 @@ Store = assign {}, EventEmitter.prototype,
   getMemberName: (member_id) ->
     return if @getMembers()[member_id] then @getMembers()[member_id].name else 'LLC'
 
-  getMemberShowsTotal: (member_id = '0') ->
+  getMemberShowsTotal: (member_id = 0) ->
     return @_getMemberParticipatedShows(member_id).length
 
-  getMemberPaymentTotal: (member_id = '0') ->
+  getMemberPaymentTotal: (member_id = 0) ->
     booking_cut = _.reduce(@_getMemberBookedShows(member_id), (memo, show) =>
       booking_payment = @_getBookedPayment(show)
       return memo + booking_payment
@@ -98,7 +98,7 @@ Store = assign {}, EventEmitter.prototype,
 
     return booking_cut + playing_cut
 
-  getLLCPaymentTotal: (member_id = '0') ->
+  getLLCPaymentTotal: (member_id = 0) ->
     booking_cut = _.reduce(@_getMemberBookedShows(member_id), (memo, show) =>
       booking_payment = @_getBookedPayment(show)
       return memo + booking_payment
@@ -114,6 +114,7 @@ Store = assign {}, EventEmitter.prototype,
   #-----------  Calculations  -----------#
 
   _getBookedPayment: (show) ->
+    return 0 if show.booked_by == 0
     percentage = switch
       when show.payment <= 300 then 0.05
       when show.payment <= 1000 then 0.10
@@ -130,13 +131,13 @@ Store = assign {}, EventEmitter.prototype,
 
   #-----------  Calculation Filters  -----------#
 
-  _getMemberBookedShows: (member_id = '0') ->
+  _getMemberBookedShows: (member_id) ->
     return _.filter(@getVisibleShows(), (show) -> return show.booked_by == member_id) || []
 
-  _getMemberPlayedShows: (member_id = '0') ->
+  _getMemberPlayedShows: (member_id) ->
     return _.filter(@getVisibleShows(), (show) -> return _.contains(show.participants, member_id)) || []
 
-  _getMemberParticipatedShows: (member_id = '0') ->
+  _getMemberParticipatedShows: (member_id) ->
     shows = @_getMemberBookedShows(member_id).concat(@_getMemberPlayedShows(member_id))
     return _.uniq(shows, false, (show) -> return show.id) || []
 

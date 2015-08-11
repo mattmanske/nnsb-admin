@@ -63,7 +63,6 @@ PageWrapper = React.createClass
       shows   : Store.getVisibleShows()
       members : Store.getMembers()
       month   : Store.getFilterMonth()
-    @_closeModal()
 
   _updateSizing: ->
     @setState
