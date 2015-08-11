@@ -4,6 +4,7 @@
 # see https://facebook.github.io/fixed-data-table/
 
 _                = require('underscore')
+moment           = require('moment')
 React            = require('react')
 classNames       = require('classnames')
 FixedDataTable   = require('fixed-data-table')
@@ -23,7 +24,7 @@ DataTable = React.createClass
 
   propTypes:
     shows       : React.PropTypes.array
-    members     : React.PropTypes.array
+    members     : React.PropTypes.object
     tableWidth  : React.PropTypes.number
     tableHeight : React.PropTypes.number
     filterMonth : React.PropTypes.oneOfType([
@@ -87,7 +88,7 @@ DataTable = React.createClass
             key="is_paid"
             align="center"
             dataKey="is_paid"
-            cellRenderer={this._getShowPaidCell}
+            cellRenderer={this._getShowEditCell}
             headerRenderer={this._getShowPaidHeader}
           />
           <Column
@@ -139,11 +140,11 @@ DataTable = React.createClass
 
   #-----------  Event Handlers  -----------#
 
-  _toggleIsPaid: (evt) ->
-    TableActions.toggleIsPaid(evt.target.value)
+  # _toggleIsPaid: (evt) ->
+  #   TableActions.toggleIsPaid(evt.target.value)
 
-  _toggleAllIsPaid: ->
-    TableActions.toggleAllIsPaid()
+  # _toggleAllIsPaid: ->
+  #   TableActions.toggleAllIsPaid()
 
   #-----------  Member Components  -----------#
 
@@ -170,36 +171,52 @@ DataTable = React.createClass
 
   #-----------  Show Components  -----------#
 
-  _getShowPaidCell: (cellData, cellDataKey, rowData, rowIndex, columnData, width) ->
+  _getShowEditCell: (cellData, cellDataKey, rowData, rowIndex, columnData, width) ->
     return (
       <div>
-        <span className="btn btn-link btn-xs" onClick={this.props.editShow.bind(null,rowData)}>
+        <span className="btn btn-link btn-xs" onClick={this.props.editShow.bind(null, rowData)}>
           <i className="glyphicon glyphicon-cog"></i>
         </span>
       </div>
     )
 
   _getShowPaidHeader: (label, cellDataKey, columnData, rowData, width) ->
-    is_paid = (Store.getNumberPaid() == @props.shows.length)
-    return (<div><input type="checkbox" defaultChecked={is_paid} disabled={is_paid} onChange={this._toggleAllIsPaid} /></div>)
+    is_paid = false # (Store.getNumberPaid() == @props.shows.length)
+    return (
+      <div>
+        <input type="checkbox" defaultChecked={is_paid} disabled={is_paid} />
+      </div>
+    )
 
   _getShowDateCell: (cellData, cellDataKey, rowData, rowIndex, columnData, width) ->
-    return (<div>{cellData.format('M/D/YY')}</div>)
+    return (
+      <div>{moment(cellData).format('M/D/YY')}</div>
+    )
 
   _getShowPaymentCell: (cellData, cellDataKey, rowData, rowIndex, columnData, width) ->
-    return (<div>{currencyFormater(cellData)}</div>)
+    return (
+      <div>{currencyFormater(cellData)}</div>
+    )
 
   _getShowBookedCell: (cellData, cellDataKey, rowData, rowIndex, columnData, width) ->
-    return (<div>{Store.getMemberName(cellData)}</div>)
+    return (
+      <div>{Store.getMemberName(cellData)}</div>
+    )
 
   _getShowDateFooter: (label, cellDataKey, columnData, rowData, width) ->
-    return (<div>Totals:</div>)
+    return (
+      <div>Totals:</div>
+    )
 
   _getShowNameFooter: (label, cellDataKey, columnData, rowData, width) ->
-    return (<div>{this.props.shows.length} shows</div>)
+    return (
+      <div>{this.props.shows.length} shows</div>
+    )
 
   _getShowPaymentFooter: (label, cellDataKey, columnData, rowData, width) ->
-    return (<div>{currencyFormater(Store.getShowsTotalCollected())}</div>)
+    return (
+      <div>{currencyFormater(Store.getShowsTotalCollected())}</div>
+    )
 
   _getShowBookedFooter: (label, cellDataKey, columnData, rowData, width) ->
     return (

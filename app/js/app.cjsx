@@ -16,20 +16,18 @@ ShowModal   = require('./components/show_modal')
 PageWrapper = React.createClass
 
   propTypes:
-    shows       : React.PropTypes.array
-    members     : React.PropTypes.array
-    filterMonth : React.PropTypes.oneOfType([
+    shows   : React.PropTypes.array
+    members : React.PropTypes.object
+    month   : React.PropTypes.oneOfType([
       React.PropTypes.object,
       React.PropTypes.func
     ])
 
   getDefaultProps: ->
-    Store.init()
-
     return {
-      shows       : Store.getFilteredShows()
-      members     : Store.getMembers()
-      filterMonth : Store.getFilterMonth()
+      shows   : Store.getVisibleShows()
+      members : Store.getMembers()
+      month   : Store.getFilterMonth()
     }
 
   getInitialState: ->
@@ -43,13 +41,16 @@ PageWrapper = React.createClass
 
   #-----------  Mount / Unmount  -----------#
 
+  componentWillMount: ->
+    Store.init()
+
   componentDidMount: ->
-    Store.addChangeListener(@_onFilterChange)
+    Store.addChangeListener(@_onDataChange)
     $(window).on 'resize', @_onResize
     @_updateSizing()
 
   componentWillUnmount: ->
-    Store.removeChangeListener(@_onFilterChange)
+    Store.removeChangeListener(@_onDataChange)
 
   #-----------  Event Handlers  -----------#
 
@@ -57,11 +58,12 @@ PageWrapper = React.createClass
     clearTimeout(@_updateTimer)
     @_updateTimer = setTimeout(@_updateSizing, 16)
 
-  _onFilterChange: ->
+  _onDataChange: ->
     @setProps
-      shows       : Store.getFilteredShows()
-      members     : Store.getMembers()
-      filterMonth : Store.getFilterMonth()
+      shows   : Store.getVisibleShows()
+      members : Store.getMembers()
+      month   : Store.getFilterMonth()
+    @_closeModal()
 
   _updateSizing: ->
     @setState
@@ -88,14 +90,14 @@ PageWrapper = React.createClass
   render: ->
     return (
       <div className="page-wrapper">
-        <MonthPicker filterMonth={this.state.filterMonth} />
+        <MonthPicker filterMonth={this.props.month} />
 
         <DataTable
           shows={this.props.shows}
           members={this.props.members}
           tableWidth={this.state.tableWidth}
           tableHeight={this.state.tableHeight}
-          filterMonth={this.props.filterMonth}
+          filterMonth={this.props.month}
           editShow={this._editShow}
         />
 

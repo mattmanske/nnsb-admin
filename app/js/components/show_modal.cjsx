@@ -14,21 +14,21 @@ ShowModal = React.createClass
   mixins: [React.addons.LinkedStateMixin]
 
   propTypes:
-    members     : React.PropTypes.array
+    members     : React.PropTypes.object
     currentShow : React.PropTypes.object
     isModalOpen : React.PropTypes.bool
     closeModal  : React.PropTypes.func.isRequired
 
   getDefaultProps: ->
     return {
-      members     : []
+      members     : {}
       currentShow : {}
       isModalOpen : false
     }
 
   componentWillReceiveProps: (new_props) ->
     show = new_props.currentShow
-    formatted_date = if show.date then show.date.format('YYYY-MM-DD') else moment().format('YYYY-MM-DD')
+    formatted_date = if show.date then moment(show.date).format('YYYY-MM-DD') else moment().format('YYYY-MM-DD')
 
     @setState {
       name      : show.name
@@ -57,8 +57,8 @@ ShowModal = React.createClass
   render: ->
     member_options = [<option key="0" value="0">– none –</option>]
 
-    for index, member of @props.members
-      member_options.push <option key={member.id} value={member.id}>{member.name}</option>
+    for member_id, member of @props.members
+      member_options.push <option key={member_id} value={member_id}>{member.name}</option>
 
     if @props.isModalOpen
       return (

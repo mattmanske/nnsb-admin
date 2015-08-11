@@ -31,14 +31,14 @@ TableActions =
       memberID : member_id
       showID   : show_id
 
-  toggleIsPaid: (show_id) ->
-    TableDispatcher.dispatch
-      type   : ActionTypes.TOGGLE_IS_PAID
-      showID : show_id
+  # toggleIsPaid: (show_id) ->
+  #   TableDispatcher.dispatch
+  #     type   : ActionTypes.TOGGLE_IS_PAID
+  #     showID : show_id
 
-  toggleAllIsPaid: ->
-    TableDispatcher.dispatch
-      type   : ActionTypes.TOGGLE_ALL_IS_PAID
+  # toggleAllIsPaid: ->
+  #   TableDispatcher.dispatch
+  #     type   : ActionTypes.TOGGLE_ALL_IS_PAID
 
 #-----------  Export  -----------#
 

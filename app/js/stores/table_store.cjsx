@@ -16,9 +16,9 @@ CHANGE_EVENT = 'change'
 
 Store = assign {}, EventEmitter.prototype,
 
-  _shows         : []
-  _members       : []
-  _filteredShows : []
+  _shows        : []
+  _members      : {}
+  _visibleShows : []
 
   _showsDB   : new Firebase('https://nnsb-calculator.firebaseio.com/shows/')
   _membersDB : new Firebase('https://nnsb-calculator.firebaseio.com/members/')
@@ -35,41 +35,44 @@ Store = assign {}, EventEmitter.prototype,
   #-----------  Initializer  -----------#
 
   init: ->
-    @_showsDB.on 'value', (data) =>
-      console.count 'shows'
-      @_shows = _.extend({}, data.val())
-      @_emitChange()
+    @_showsDB.on 'value', (data) => return @_showsUpdated(data)
+    @_membersDB.on 'value', (data) => return @_membersUpdated(data)
+    @_setShowFilters(moment().startOf('month'))
 
-    @_membersDB.on 'value', (data) =>
-      console.count 'members'
-      @_members = _.extend({}, data.val())
-      @_emitChange()
+  #-----------  Update Handlers  -----------#
 
-    default_start = moment().startOf('month')
-    default_end = moment(@_filterStart).endOf('month')
-    @_setFilters(default_start, default_end)
+  _showsUpdated: (fire_data) ->
+    @_shows = _.map(fire_data.val(), (show, id) -> return _.extend(show, {id: id}))
+    @_setShowFilters()
+    @_emitChange()
+
+  _membersUpdated: (fire_data) ->
+    @_members = fire_data.val()
+    @_emitChange()
 
   #-----------  Setters  -----------#
 
-  _setFilters: (filter_start, filter_end) ->
-    console.count 'filter'
-    @_filterStart   = filter_start || @_filterStart
-    @_filterEnd     = filter_end || @_filterEnd
-    @_filteredShows = _.filter(@_shows, (show) => return moment(show.date).isBetween(@_filterStart, @_filterEnd))
+  _setShowFilters: (filter_month = null) ->
+    @_filteredMonth = filter_month || @_filteredMonth
+    filtered_shows = _.filter(@_shows, (show) => return moment(show.date).isSame(@_filteredMonth, 'month'))
+    @_visibleShows = _.sortBy(filtered_shows, (show) -> return +moment(show.date))
 
   #-----------  Filter Getters  -----------#
 
   getFilterMonth: ->
-    return @_filterStart
+    return @_filteredMonth
 
-  getFilteredShows: ->
-    return @_filteredShows
+  getVisibleShows: ->
+    return @_visibleShows
 
-  getNumberPaid: ->
-    return _.reduce(@getFilteredShows(), ((memo, show) -> return if show.is_paid then (memo + 1) else memo), 0)
+  getShowParticipants: (show_id) ->
+    return _.findWhere(@_shows, {id: show_id}).participants || []
+
+  # getNumberPaid: ->
+  #   return _.reduce(@getVisibleShows(), ((memo, show) -> return if show.is_paid then (memo + 1) else memo), 0)
 
   getShowsTotalCollected: ->
-    return _.reduce(@getFilteredShows(), ((memo, show) -> return memo + show.payment), 0)
+    return _.reduce(@getVisibleShows(), ((memo, show) -> return memo + parseInt(show.payment)), 0)
 
   #-----------  Member Getters  -----------#
 
@@ -101,7 +104,7 @@ Store = assign {}, EventEmitter.prototype,
       return memo + booking_payment
     , 0)
 
-    llc_cut = _.reduce(@getFilteredShows(), (memo, show) =>
+    llc_cut = _.reduce(@getVisibleShows(), (memo, show) =>
       llc_payment = @_getLLCCut(show)
       return memo + llc_payment
     , 0)
@@ -128,10 +131,10 @@ Store = assign {}, EventEmitter.prototype,
   #-----------  Calculation Filters  -----------#
 
   _getMemberBookedShows: (member_id = '0') ->
-    return _.filter(@getFilteredShows(), (show) -> return show.booked_by == member_id) || []
+    return _.filter(@getVisibleShows(), (show) -> return show.booked_by == member_id) || []
 
   _getMemberPlayedShows: (member_id = '0') ->
-    return _.filter(@getFilteredShows(), (show) -> return _.contains(show.participants, member_id)) || []
+    return _.filter(@getVisibleShows(), (show) -> return _.contains(show.participants, member_id)) || []
 
   _getMemberParticipatedShows: (member_id = '0') ->
     shows = @_getMemberBookedShows(member_id).concat(@_getMemberPlayedShows(member_id))
@@ -140,7 +143,6 @@ Store = assign {}, EventEmitter.prototype,
   #-----------  Change Listeners  -----------#
 
   _emitChange: ->
-    @_setFilters()
     return @emit(CHANGE_EVENT)
 
   addChangeListener: (callback) ->
@@ -154,22 +156,23 @@ Store = assign {}, EventEmitter.prototype,
   _createShow: (data) ->
     @_showsDB.push(_.defaults(data, @_default_show))
 
-  _updateShow: (data) ->
-    false
+  _updateShow: (show_id, data) ->
+    @_showsDB.child(show_id).update(data)
 
   _toggleParticipant: (member_id, show_id) ->
-    # id = parseInt(member_id)
-    # if _.contains(@_shows[show_id].participants, id)
-    #   @_shows[show_id].participants = _.without(@_shows[show_id].participants, id)
-    # else
-    #   @_shows[show_id].participants.push(id)
+    participants = @getShowParticipants(show_id)
+    if _.contains(participants, member_id)
+      participants = _.without(participants, member_id)
+    else
+      participants.push(member_id)
+    @_showsDB.child(show_id).update({ participants: participants })
 
-  _toggleIsPaid: (show_id) ->
-    # @_shows[show_id].is_paid = true
+  # _toggleIsPaid: (show_id) ->
+  #   @_shows[show_id].is_paid = true
 
-  _toggleAllIsPaid: ->
-    # for id in _.map(@getFilteredShows(), (show) -> return show.id)
-    #   @_shows[id].is_paid = true
+  # _toggleAllIsPaid: ->
+  #   for id in _.map(@getFilteredShows(), (show) -> return show.id)
+  #     @_shows[id].is_paid = true
 
 #----------  Event Dispatchers  -----------#
 
@@ -178,7 +181,7 @@ Store.dispatchToken = TableDispatcher.register (action) ->
   switch action.type
 
     when ActionTypes.CHANGE_FILTERS
-      Store._setFilters(action.startDate)
+      Store._setShowFilters(action.startDate)
       Store._emitChange()
 
     when ActionTypes.CREATE_SHOW
@@ -186,23 +189,21 @@ Store.dispatchToken = TableDispatcher.register (action) ->
 
     when ActionTypes.UPDATE_SHOW
       Store._updateShow(action.showID, action.showData)
-      Store._emitChange()
 
     when ActionTypes.TOGGLE_PARTICIPANT
       Store._toggleParticipant(action.memberID, action.showID)
-      Store._emitChange()
 
-    when ActionTypes.TOGGLE_IS_PAID
-      confirm = window.confirm('Are you sure? A paid show cannot be reset.')
-      if confirm
-        Store._toggleIsPaid(action.showID)
-        Store._emitChange()
+    # when ActionTypes.TOGGLE_IS_PAID
+    #   confirm = window.confirm('Are you sure? A paid show cannot be reset.')
+    #   if confirm
+    #     Store._toggleIsPaid(action.showID)
+    #     Store._emitChange()
 
-    when ActionTypes.TOGGLE_ALL_IS_PAID
-      confirm = window.confirm('Are you sure? A paid show cannot be reset.')
-      if confirm
-        Store._toggleAllIsPaid()
-        Store._emitChange()
+    # when ActionTypes.TOGGLE_ALL_IS_PAID
+    #   confirm = window.confirm('Are you sure? A paid show cannot be reset.')
+    #   if confirm
+    #     Store._toggleAllIsPaid()
+    #     Store._emitChange()
 
 #-----------  Export  -----------#
 

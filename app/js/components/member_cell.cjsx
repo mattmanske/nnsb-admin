@@ -10,7 +10,7 @@ TableActions = require('./../actions/table_actions')
 MemberCell = React.createClass
 
   propTypes:
-    showID       : React.PropTypes.number.isRequired
+    showID       : React.PropTypes.string.isRequired
     memberID     : React.PropTypes.string.isRequired
     isParticpant : React.PropTypes.bool
     isBooker     : React.PropTypes.bool
