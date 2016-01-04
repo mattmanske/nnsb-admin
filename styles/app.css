@@ -35,7 +35,7 @@ body {
     opacity: 1;
     border: none;
     margin: 0 auto 0;
-    max-width: 30em;
+    max-width: 32em;
     padding: 2.25em;
     position: relative;
     border-radius: 5px;
@@ -64,6 +64,15 @@ body {
       margin: 2em 0 1.5em; }
     .nnsb-modal .nnsb-modal__block form {
       margin-top: 0.75em; }
+    .nnsb-modal .nnsb-modal__block table {
+      margin-top: 2.25em; }
+      .nnsb-modal .nnsb-modal__block table th, .nnsb-modal .nnsb-modal__block table td {
+        font-size: 90%;
+        text-align: center; }
+        .nnsb-modal .nnsb-modal__block table th:first-child, .nnsb-modal .nnsb-modal__block table th:nth-child(2), .nnsb-modal .nnsb-modal__block table td:first-child, .nnsb-modal .nnsb-modal__block table td:nth-child(2) {
+          text-align: left; }
+        .nnsb-modal .nnsb-modal__block table th:last-child, .nnsb-modal .nnsb-modal__block table td:last-child {
+          text-align: right; }
     .nnsb-modal .nnsb-modal__block .nnsb-modal__buttons {
       text-align: right; }
       .nnsb-modal .nnsb-modal__block .nnsb-modal__buttons .btn-link {
