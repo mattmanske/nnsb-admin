@@ -6,28 +6,31 @@ React  = require('react')
 
 DateRangePicker = require('react-bootstrap-daterangepicker')
 
-Store       = require('./stores/table_store')
-DataTable   = require('./components/data_table')
-MonthPicker = require('./components/month_picker')
-ShowModal   = require('./components/show_modal')
+Store           = require('./stores/table_store')
+DataTable       = require('./components/data_table')
+MonthPicker     = require('./components/month_picker')
+ShowModal       = require('./components/show_modal')
+DeductionsModal = require('./components/deductions_modal')
 
 #-----------  React Componet Class  -----------#
 
 PageWrapper = React.createClass
 
   propTypes:
-    shows   : React.PropTypes.array
-    members : React.PropTypes.object
-    month   : React.PropTypes.oneOfType([
+    shows      : React.PropTypes.array
+    month      : React.PropTypes.oneOfType([
       React.PropTypes.object,
       React.PropTypes.func
     ])
+    members    : React.PropTypes.object
+    deductions : React.PropTypes.array
 
   getDefaultProps: ->
     return {
-      shows   : Store.getVisibleShows()
-      members : Store.getMembers()
-      month   : Store.getFilterMonth()
+      shows      : Store.getVisibleShows()
+      month      : Store.getFilterMonth()
+      members    : Store.getMembers()
+      deductions : Store.getVisibleDeductions()
     }
 
   getInitialState: ->
@@ -46,7 +49,7 @@ PageWrapper = React.createClass
 
   componentDidMount: ->
     Store.addChangeListener(@_onDataChange)
-    $(window).on 'resize', @_onResize
+    $(window).on('resize', @_onResize)
     @_updateSizing()
 
   componentWillUnmount: ->
@@ -60,9 +63,10 @@ PageWrapper = React.createClass
 
   _onDataChange: ->
     @setProps
-      shows   : Store.getVisibleShows()
-      members : Store.getMembers()
-      month   : Store.getFilterMonth()
+      shows      : Store.getVisibleShows()
+      month      : Store.getFilterMonth()
+      members    : Store.getMembers()
+      deductions : Store.getVisibleDeductions()
 
   _updateSizing: ->
     @setState
@@ -77,16 +81,25 @@ PageWrapper = React.createClass
   _editShow: (show) ->
     @setState
       currentShow : show
-      isModalOpen : true
+      isModalOpen : 'shows'
 
   _addNewShow: ->
     @setState
       currentShow : {}
-      isModalOpen : true
+      isModalOpen : 'shows'
+
+  _showYearlyDeductions: ->
+    @setState
+      isModalOpen : 'deductions'
 
   #-----------  HTML Element Render  -----------#
 
   render: ->
+    currentYear = if @props.month then @props.month.year() else moment().year()
+
+    showShowModal       = @state.isModalOpen == 'shows'
+    showDeductionsModal = @state.isModalOpen == 'deductions'
+
     return (
       <div className="page-wrapper">
         <MonthPicker filterMonth={this.props.month} />
@@ -103,11 +116,19 @@ PageWrapper = React.createClass
         <ShowModal
           members={this.props.members}
           currentShow={this.state.currentShow}
-          isModalOpen={this.state.isModalOpen}
+          isModalOpen={showShowModal}
+          closeModal={this._closeModal}
+        />
+
+        <DeductionsModal
+          year={currentYear}
+          shows={this.props.deductions}
+          isModalOpen={showDeductionsModal}
           closeModal={this._closeModal}
         />
 
         <button className="btn btn-default" onClick={this._addNewShow}>Add New Show</button>
+        <button className="btn btn-default pull-right" onClick={this._showYearlyDeductions}>{currentYear} Deductions</button>
       </div>
     )
 

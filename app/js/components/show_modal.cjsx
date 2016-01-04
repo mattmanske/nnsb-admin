@@ -35,6 +35,8 @@ ShowModal = React.createClass
       date      : formatted_date
       payment   : show.payment
       booked_by : show.booked_by
+      milage    : show.milage
+      vehicles  : show.vehicles
     }
 
   #-----------  Event Handlers  -----------#
@@ -55,6 +57,8 @@ ShowModal = React.createClass
       name      : @state.name
       payment   : @state.payment
       booked_by : @state.booked_by
+      milage    : @state.milage
+      vehicles  : @state.vehicles
     }
 
     if @props.currentShow.id
@@ -67,16 +71,16 @@ ShowModal = React.createClass
   #-----------  HTML Element Render  -----------#
 
   render: ->
-    member_options = [<option key="0" value="0">– none –</option>]
-
-    for member_id, member of @props.members
-      member_options.push <option key={member_id} value={member_id}>{member.name}</option>
-
-    delete_show = (
-      <button type="button" className="btn btn-link" onClick={this._deleteAndClose}>delete</button>
-    ) if @props.currentShow.id
-
     if @props.isModalOpen
+      member_options = [<option key="0" value="0">– none –</option>]
+
+      for member_id, member of @props.members
+        member_options.push <option key={member_id} value={member_id}>{member.name}</option>
+
+      delete_show = (
+        <button type="button" className="btn btn-link" onClick={this._deleteAndClose}>delete</button>
+      ) if @props.currentShow.id
+
       return (
         <ReactCSSTransitionGroup transitionName="nnsb-modal--animation">
           <div className="nnsb-modal" onClick={this._closeModal}>
@@ -111,6 +115,19 @@ ShowModal = React.createClass
                     <select className="form-control" valueLink={this.linkState('booked_by')}>
                       {member_options}
                     </select>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div className="form-group">
+                  <label className="col-sm-3 control-label">Miles <small><i>(total)</i></small></label>
+                  <div className="col-sm-4">
+                    <input type="number" className="form-control" valueLink={this.linkState('milage')} />
+                  </div>
+                  <label className="col-sm-2 control-label">Cars</label>
+                  <div className="col-sm-3">
+                    <input type="number" className="form-control" valueLink={this.linkState('vehicles')} />
                   </div>
                 </div>
               </form>

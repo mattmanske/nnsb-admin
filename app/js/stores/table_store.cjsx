@@ -16,9 +16,10 @@ CHANGE_EVENT = 'change'
 
 Store = assign {}, EventEmitter.prototype,
 
-  _shows        : []
-  _members      : {}
-  _visibleShows : []
+  _shows             : []
+  _members           : {}
+  _visibleShows      : []
+  _visibleDeductions : []
 
   _showsDB   : new Firebase('https://nnsb-calculator.firebaseio.com/shows/')
   _membersDB : new Firebase('https://nnsb-calculator.firebaseio.com/members/')
@@ -30,6 +31,8 @@ Store = assign {}, EventEmitter.prototype,
     booked_by: 0
     participants: []
     is_paid: false
+    milage: 0
+    vehicles: 0
   }
 
   #-----------  Initializer  -----------#
@@ -54,8 +57,17 @@ Store = assign {}, EventEmitter.prototype,
 
   _setShowFilters: (filter_month = null) ->
     @_filteredMonth = filter_month || @_filteredMonth
-    filtered_shows = _.filter(@_shows, (show) => return moment(show.date).isSame(@_filteredMonth, 'month'))
-    @_visibleShows = _.sortBy(filtered_shows, (show) -> return +moment(show.date))
+    filter_year     = @_filteredMonth.year()
+
+    filtered_shows      = _.filter(@_shows, (show) => return moment(show.date).isSame(@_filteredMonth, 'month'))
+    filtered_deductions = _.filter(@_shows, (show) =>
+      isYear       = moment(show.date).isSame(@_filteredMonth, 'year')
+      hasDeduction = show.milage > 0 && show.vehicles > 0
+      return (isYear && hasDeduction)
+    )
+
+    @_visibleShows      = _.sortBy(filtered_shows, (show) -> return +moment(show.date))
+    @_visibleDeductions = _.sortBy(filtered_deductions, (show) -> return +moment(show.date))
 
   #-----------  Filter Getters  -----------#
 
@@ -64,6 +76,9 @@ Store = assign {}, EventEmitter.prototype,
 
   getVisibleShows: ->
     return @_visibleShows
+
+  getVisibleDeductions: ->
+    return @_visibleDeductions
 
   getShowParticipants: (show_id) ->
     return _.findWhere(@_shows, {id: show_id}).participants || []

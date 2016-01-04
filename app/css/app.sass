@@ -46,7 +46,7 @@ $modalSpeed: 0.25s
     opacity: 1
     border: none
     margin: 0 auto 0
-    max-width: 30em
+    max-width: 32em
     padding: $gutter
     position: relative
     border-radius: 5px
@@ -75,6 +75,20 @@ $modalSpeed: 0.25s
 
     form
       margin-top: 0.75em
+
+    table
+      margin-top: $gutter
+
+      th, td
+        font-size: 90%
+        text-align: center
+
+        &:first-child,
+        &:nth-child(2)
+          text-align: left
+
+        &:last-child
+          text-align: right
 
     .nnsb-modal__buttons
       text-align: right
