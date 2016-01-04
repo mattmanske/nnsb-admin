@@ -78,7 +78,7 @@ DeductionsModal = React.createClass
             <div className="nnsb-modal__block">
               <a className="nnsb-modal__close" onClick={this._closeModal}>&times;</a>
 
-              <button className="btn btn-default btn-sm pull-right" onClick={this._doanloadCSV}>Download XLS</button>
+              <button className="btn btn-default btn-sm pull-right" onClick={this._doanloadCSV}>Download CSV</button>
               <h5>{this.props.year} Deductions <i className="text-muted">(at ${tax_rate}/mi)</i></h5>
 
               <table className="table table-condensed table-hover">
