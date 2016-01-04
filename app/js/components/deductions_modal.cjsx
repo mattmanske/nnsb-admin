@@ -43,7 +43,7 @@ DeductionsModal = React.createClass
       data.push([show.date, show.name, show.milage, show.vehicles, 0.575, deduction])
 
     csv = convertToCSV(data)
-    $(evt.target).attr("href", 'data:Application/octet-stream,' + encodeURIComponent(csv))[0].click()
+    $(evt.target).attr("href", 'data:Application/octet-stream,' + encodeURIComponent(csv))
 
   #-----------  HTML Element Render  -----------#
 
