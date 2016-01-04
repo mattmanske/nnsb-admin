@@ -1,13 +1,14 @@
 #-----------  Requirements  -----------#
 
-React        = require('react/addons')
-moment       = require('moment')
-classNames   = require('classnames')
+$          = require('jquery')
+React      = require('react/addons')
+moment     = require('moment')
 
-TableActions     = require('./../actions/table_actions')
-currencyFormater = require('./../utils/utility_functions').currencyFormater
-
+TableActions            = require('./../actions/table_actions')
 ReactCSSTransitionGroup = React.addons.CSSTransitionGroup
+
+convertToCSV     = require('./../utils/utility_functions').convertToCSV
+currencyFormater = require('./../utils/utility_functions').currencyFormater
 
 #-----------  React Componet Class  -----------#
 
@@ -33,6 +34,16 @@ DeductionsModal = React.createClass
   _closeModal: (evt) ->
     if $(evt.target).hasClass('nnsb-modal') || $(evt.target).hasClass('nnsb-modal__close')
       @props.closeModal()
+
+  _doanloadCSV: (evt) ->
+    data = []
+    data.push(['Date', 'Location', 'Milage', 'Vehicles', 'Rate ($/mi)', 'Deduction'])
+    for show in @props.shows
+      deduction = (show.milage * show.vehicles * 0.575)
+      data.push([show.date, show.name, show.milage, show.vehicles, 0.575, deduction])
+
+    csv = convertToCSV(data)
+    $(evt.target).attr("href", 'data:Application/octet-stream,' + encodeURIComponent(csv))[0].click()
 
   #-----------  HTML Element Render  -----------#
 
@@ -66,7 +77,7 @@ DeductionsModal = React.createClass
             <div className="nnsb-modal__block">
               <a className="nnsb-modal__close" onClick={this._closeModal}>&times;</a>
 
-              <button className="btn btn-default btm-xs pull-right">Download XLS</button>
+              <a className="btn btn-default btn-sm pull-right" onClick={this._doanloadCSV} download={'nnsb_' + this.props.year + '_deductions.csv'}>Download XLS</a>
               <h5>{this.props.year} Deductions <i className="text-muted">(at ${tax_rate}/mi)</i></h5>
 
               <table className="table table-condensed table-hover">

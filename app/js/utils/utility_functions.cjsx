@@ -18,6 +18,22 @@ UtilityFunctions =
 
     return '$' + value
 
+  # ---------------
+  # Turns JS array into CSV string for download
+  #
+  # @param: {Arr} data - data array to format
+  # ---------------
+
+  convertToCSV: (data) ->
+    csv = ''
+
+    for row in data
+      for cell in row
+        csv += cell + ','
+      csv += '\n'
+
+    return csv
+
 #-----------  Export  -----------#
 
 module.exports = UtilityFunctions
