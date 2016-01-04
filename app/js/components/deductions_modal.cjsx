@@ -42,8 +42,9 @@ DeductionsModal = React.createClass
       deduction = (show.milage * show.vehicles * 0.575)
       data.push([show.date, show.name, show.milage, show.vehicles, 0.575, deduction])
 
-    csv = convertToCSV(data)
-    $(evt.target).attr("href", 'data:Application/octet-stream,' + encodeURIComponent(csv))
+    file_name = 'nnsb_' + @props.year + '_deductions.csv'
+    file_data = 'data:Application/octet-stream,' + encodeURIComponent(convertToCSV(data))
+    $("<a href='#{file_data}' download='#{file_name}' style='display:none'></a>").appendTo('body')[0].click()
 
   #-----------  HTML Element Render  -----------#
 
@@ -77,7 +78,7 @@ DeductionsModal = React.createClass
             <div className="nnsb-modal__block">
               <a className="nnsb-modal__close" onClick={this._closeModal}>&times;</a>
 
-              <a className="btn btn-default btn-sm pull-right" onClick={this._doanloadCSV} download={'nnsb_' + this.props.year + '_deductions.csv'}>Download XLS</a>
+              <button className="btn btn-default btn-sm pull-right" onClick={this._doanloadCSV}>Download XLS</button>
               <h5>{this.props.year} Deductions <i className="text-muted">(at ${tax_rate}/mi)</i></h5>
 
               <table className="table table-condensed table-hover">
