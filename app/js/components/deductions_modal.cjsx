@@ -51,7 +51,9 @@ DeductionsModal = React.createClass
   render: ->
     if @props.isModalOpen
       deductions = []
+      total_miles = 0
       total_deductions = 0
+
       tax_rate = switch
         when @props.year == 2015 then 0.575
         when @props.year == 2016 then 0.54
@@ -60,6 +62,8 @@ DeductionsModal = React.createClass
       for show in @props.shows
         key = show.date + '_' + show.name
         deduction = (show.milage * show.vehicles * tax_rate)
+
+        total_miles = total_miles + parseFloat(show.milage)
         total_deductions = total_deductions + deduction
 
         deductions.push (
@@ -96,8 +100,13 @@ DeductionsModal = React.createClass
                 </tbody>
                 <tfoot>
                   <tr>
-                    <th colSpan="5">
-                      <small className="text-muted"><i>{this.props.year} total:</i></small>&nbsp;&nbsp;
+                    <th colSpan="2">
+                      <small className="text-muted"><i>{this.props.year} total:</i></small>
+                    </th>
+                    <th colSpan="2">
+                      {total_miles.toFixed(1)} mi
+                    </th>
+                    <th>
                       {currencyFormater(total_deductions)}
                     </th>
                   </tr>
