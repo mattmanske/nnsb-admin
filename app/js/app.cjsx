@@ -114,6 +114,7 @@ PageWrapper = React.createClass
         <MonthPicker filterMonth={this.props.month} />
 
         <DataTable
+          year={currentYear}
           shows={this.props.shows}
           members={this.props.members}
           tableWidth={this.state.tableWidth}

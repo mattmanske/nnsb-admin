@@ -23,6 +23,7 @@ MemberCell       = require('./member_cell')
 DataTable = React.createClass
 
   propTypes:
+    year        : React.PropTypes.number
     shows       : React.PropTypes.array
     members     : React.PropTypes.object
     tableWidth  : React.PropTypes.number
@@ -50,6 +51,9 @@ DataTable = React.createClass
     memberColumns = []
 
     for member_id, member of @props.members
+      changeTerry = ('Terry' == member.name && 2015 < @props.year)
+      name = if changeTerry then 'Brian O' else member.name
+
       member.show_total = Store.getMemberShowsTotal(member_id)
       member.payment_total = Store.getMemberPaymentTotal(member_id)
 
@@ -60,7 +64,7 @@ DataTable = React.createClass
           align="center"
           dataKey={member_id}
           columnData={member}
-          label={member.name}
+          label={name}
           cellRenderer={this._getMemberCell}
           footerRenderer={this._getMemberFooter}
         />
@@ -163,9 +167,12 @@ DataTable = React.createClass
     )
 
   _getMemberFooter: (label, cellDataKey, columnData, rowData, width) ->
+    changeTerry = ('Terry' == columnData.name && 2015 < @props.year)
+    name = if changeTerry then 'Brian O' else columnData.name
+
     return (
       <div>
-        <small>{columnData.name}: ({columnData.show_total})</small>
+        <small>{name}: ({columnData.show_total})</small>
         <br />{currencyFormater(columnData.payment_total)}
       </div>
     )
