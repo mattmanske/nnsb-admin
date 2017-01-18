@@ -5,6 +5,17 @@ body {
     margin: 15px 0; }
   body .btn-group span {
     padding-left: 12px; }
+  body .taxed {
+    font-weight: bold; }
+    body .taxed sup {
+      color: red;
+      padding-left: 0.15em; }
+  body .pull-right + .pull-right {
+    margin-right: 0.5em; }
+  body input[type='checkbox'] {
+    font-size: 1.5em; }
+  body .col-sm-2 input[type='checkbox'] {
+    margin: 0.5em; }
 
 .paid-row .public_fixedDataTableCell_main {
   cursor: not-allowed; }
