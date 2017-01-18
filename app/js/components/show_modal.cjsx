@@ -37,6 +37,7 @@ ShowModal = React.createClass
       booked_by : show.booked_by
       milage    : show.milage
       vehicles  : show.vehicles
+      is_taxed  : show.is_taxed
     }
 
   #-----------  Event Handlers  -----------#
@@ -44,6 +45,9 @@ ShowModal = React.createClass
   _closeModal: (evt) ->
     if $(evt.target).hasClass('nnsb-modal') || $(evt.target).hasClass('nnsb-modal__close')
       @props.closeModal()
+
+  _toggleTaxed: (evt) ->
+    @setState({ is_taxed: !@state.is_taxed })
 
   _deleteAndClose: ->
     confirm = window.confirm('Are you sure you want to delete this show?')
@@ -59,6 +63,7 @@ ShowModal = React.createClass
       booked_by : @state.booked_by
       milage    : @state.milage
       vehicles  : @state.vehicles
+      is_taxed  : @state.is_taxed
     }
 
     if @props.currentShow.id
@@ -104,8 +109,12 @@ ShowModal = React.createClass
 
                 <div className="form-group">
                   <label className="col-sm-3 control-label">Payment</label>
-                  <div className="col-sm-9">
+                  <div className="col-sm-6">
                     <input type="number" className="form-control" valueLink={this.linkState('payment')} />
+                  </div>
+                  <label className="col-sm-1 control-label">W9</label>
+                  <div className="col-sm-2">
+                    <input type="checkbox" checked={this.state.is_taxed} onChange={this._toggleTaxed} />
                   </div>
                 </div>
 

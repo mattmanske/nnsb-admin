@@ -1,8 +1,8 @@
 #-----------  Requirements  -----------#
 
-$      = require('jquery')
-moment = require('moment')
-React  = require('react')
+$               = require('jquery')
+moment          = require('moment')
+React           = require('react')
 
 DateRangePicker = require('react-bootstrap-daterangepicker')
 
@@ -10,6 +10,7 @@ Store           = require('./stores/table_store')
 DataTable       = require('./components/data_table')
 MonthPicker     = require('./components/month_picker')
 ShowModal       = require('./components/show_modal')
+TaxesModal      = require('./components/taxes_modal')
 DeductionsModal = require('./components/deductions_modal')
 
 #-----------  React Componet Class  -----------#
@@ -22,6 +23,7 @@ PageWrapper = React.createClass
       React.PropTypes.object,
       React.PropTypes.func
     ])
+    taxes      : React.PropTypes.array
     members    : React.PropTypes.object
     deductions : React.PropTypes.array
 
@@ -30,6 +32,7 @@ PageWrapper = React.createClass
       shows      : Store.getVisibleShows()
       month      : Store.getFilterMonth()
       members    : Store.getMembers()
+      taxes      : Store.getVisibleTaxes()
       deductions : Store.getVisibleDeductions()
     }
 
@@ -66,6 +69,7 @@ PageWrapper = React.createClass
       shows      : Store.getVisibleShows()
       month      : Store.getFilterMonth()
       members    : Store.getMembers()
+      taxes      : Store.getVisibleTaxes()
       deductions : Store.getVisibleDeductions()
 
   _updateSizing: ->
@@ -88,6 +92,10 @@ PageWrapper = React.createClass
       currentShow : {}
       isModalOpen : 'shows'
 
+  _showYearlyTaxes: ->
+    @setState
+      isModalOpen : 'taxes'
+
   _showYearlyDeductions: ->
     @setState
       isModalOpen : 'deductions'
@@ -98,6 +106,7 @@ PageWrapper = React.createClass
     currentYear = if @props.month then @props.month.year() else moment().year()
 
     showShowModal       = @state.isModalOpen == 'shows'
+    showTaxesModal      = @state.isModalOpen == 'taxes'
     showDeductionsModal = @state.isModalOpen == 'deductions'
 
     return (
@@ -120,6 +129,13 @@ PageWrapper = React.createClass
           closeModal={this._closeModal}
         />
 
+        <TaxesModal
+          year={currentYear}
+          shows={this.props.taxes}
+          isModalOpen={showTaxesModal}
+          closeModal={this._closeModal}
+        />
+
         <DeductionsModal
           year={currentYear}
           shows={this.props.deductions}
@@ -128,6 +144,7 @@ PageWrapper = React.createClass
         />
 
         <button className="btn btn-default" onClick={this._addNewShow}>Add New Show</button>
+        <button className="btn btn-default pull-right" onClick={this._showYearlyTaxes}>{currentYear} Taxes</button>
         <button className="btn btn-default pull-right" onClick={this._showYearlyDeductions}>{currentYear} Deductions</button>
       </div>
     )

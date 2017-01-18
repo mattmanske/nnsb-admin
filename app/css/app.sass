@@ -11,6 +11,22 @@ body
   .btn-group span
     padding-left: 12px
 
+  .taxed
+    font-weight: bold
+
+    sup
+      color: red
+      padding-left: 0.15em
+
+  .pull-right + .pull-right
+    margin-right: 0.5em
+
+  input[type='checkbox']
+    font-size: 1.5em
+
+  .col-sm-2 input[type='checkbox']
+    margin: 0.5em
+
 .paid-row
 
   .public_fixedDataTableCell_main
@@ -89,6 +105,11 @@ $modalSpeed: 0.25s
 
         &:last-child
           text-align: right
+
+      [colspan='2'] i
+        color: rgba(0,0,0,0.67)
+        font-weight: normal
+        padding-right: 1em
 
     .nnsb-modal__buttons
       text-align: right

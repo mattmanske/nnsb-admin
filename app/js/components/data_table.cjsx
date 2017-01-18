@@ -92,7 +92,7 @@ DataTable = React.createClass
             headerRenderer={this._getShowPaidHeader}
           />
           <Column
-            width={67}
+            width={75}
             fixed={true}
             key="date"
             label="Date"
@@ -109,24 +109,25 @@ DataTable = React.createClass
             align="center"
             dataKey="name"
             flexGrow={1}
+            cellRenderer={this._getShowNameCell}
             footerRenderer={this._getShowNameFooter}
           />
           <Column
-            width={85}
+            width={75}
             fixed={true}
             key="payment"
             align="center"
-            label="Payment"
+            label="Pay"
             dataKey="payment"
             cellRenderer={this._getShowPaymentCell}
             footerRenderer={this._getShowPaymentFooter}
           />
           <Column
-            width={100}
+            width={85}
             fixed={true}
             key="booked_by"
             align="center"
-            label="Booked"
+            label="Booker"
             dataKey="booked_by"
             cellRenderer={this._getShowBookedCell}
             footerRenderer={this._getShowBookedFooter}
@@ -189,13 +190,30 @@ DataTable = React.createClass
     )
 
   _getShowDateCell: (cellData, cellDataKey, rowData, rowIndex, columnData, width) ->
+    taxClass = if rowData.is_taxed then 'taxed' else ''
     return (
-      <div>{moment(cellData).format('M/D/YY')}</div>
+      <div className={taxClass}>
+        {moment(cellData).format('M/D/YY')}
+        {rowData.is_taxed && <sup>*</sup>}
+      </div>
+    )
+
+  _getShowNameCell: (cellData, cellDataKey, rowData, rowIndex, columnData, width) ->
+    taxClass = if rowData.is_taxed then 'taxed' else ''
+    return (
+      <div className={taxClass}>
+        {cellData}
+        {rowData.is_taxed && <sup>*</sup>}
+      </div>
     )
 
   _getShowPaymentCell: (cellData, cellDataKey, rowData, rowIndex, columnData, width) ->
+    taxClass = if rowData.is_taxed then 'taxed' else ''
     return (
-      <div>{currencyFormater(cellData)}</div>
+      <div className={taxClass}>
+        {currencyFormater(cellData)}
+        {rowData.is_taxed && <sup>*</sup>}
+      </div>
     )
 
   _getShowBookedCell: (cellData, cellDataKey, rowData, rowIndex, columnData, width) ->

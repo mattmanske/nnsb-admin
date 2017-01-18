@@ -13,7 +13,9 @@ UtilityFunctions =
 
     value = parseFloat(number)
 
-    unless value % 1 == 0
+    if value % 1 == 0
+      value = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    else
       value = value.toFixed(2)
 
     return '$' + value

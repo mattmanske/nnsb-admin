@@ -1,16 +1,16 @@
 #-----------  Requirements  -----------#
 
-_            = require('underscore')
-moment       = require('moment')
-assign       = require('object-assign')
-Firebase     = require('firebase')
-EventEmitter = require('events').EventEmitter
+_               = require('underscore')
+moment          = require('moment')
+assign          = require('object-assign')
+Firebase        = require('firebase')
+EventEmitter    = require('events').EventEmitter
 
 Constants       = require('./../constants/constants')
 TableDispatcher = require('./../dispatchers/table_dispatcher')
 
-ActionTypes  = Constants.ActionTypes
-CHANGE_EVENT = 'change'
+ActionTypes     = Constants.ActionTypes
+CHANGE_EVENT    = 'change'
 
 #-----------  Module  -----------#
 
@@ -19,20 +19,22 @@ Store = assign {}, EventEmitter.prototype,
   _shows             : []
   _members           : {}
   _visibleShows      : []
+  _visibleTaxes      : []
   _visibleDeductions : []
 
   _showsDB   : new Firebase('https://nnsb-calculator.firebaseio.com/shows/')
   _membersDB : new Firebase('https://nnsb-calculator.firebaseio.com/members/')
 
   _default_show : {
-    date: null
-    name: null
-    payment: 0
-    booked_by: 0
-    participants: []
-    is_paid: false
-    milage: 0
-    vehicles: 0
+    date         : null
+    name         : null
+    payment      : 0
+    booked_by    : 0
+    participants : []
+    is_paid      : false
+    is_taxed     : false
+    milage       : 0
+    vehicles     : 0
   }
 
   #-----------  Initializer  -----------#
@@ -59,7 +61,12 @@ Store = assign {}, EventEmitter.prototype,
     @_filteredMonth = filter_month || @_filteredMonth
     filter_year     = @_filteredMonth.year()
 
-    filtered_shows      = _.filter(@_shows, (show) => return moment(show.date).isSame(@_filteredMonth, 'month'))
+    filtered_shows = _.filter(@_shows, (show) =>
+      return moment(show.date).isSame(@_filteredMonth, 'month')
+    )
+    filtered_taxes = _.filter(@_shows, (show) =>
+      return moment(show.date).isSame(@_filteredMonth, 'year')
+    )
     filtered_deductions = _.filter(@_shows, (show) =>
       isYear       = moment(show.date).isSame(@_filteredMonth, 'year')
       hasDeduction = show.milage > 0 && show.vehicles > 0
@@ -67,6 +74,7 @@ Store = assign {}, EventEmitter.prototype,
     )
 
     @_visibleShows      = _.sortBy(filtered_shows, (show) -> return +moment(show.date))
+    @_visibleTaxes      = _.sortBy(filtered_taxes, (show) -> return +moment(show.date))
     @_visibleDeductions = _.sortBy(filtered_deductions, (show) -> return +moment(show.date))
 
   #-----------  Filter Getters  -----------#
@@ -76,6 +84,9 @@ Store = assign {}, EventEmitter.prototype,
 
   getVisibleShows: ->
     return @_visibleShows
+
+  getVisibleTaxes: ->
+    return @_visibleTaxes
 
   getVisibleDeductions: ->
     return @_visibleDeductions
