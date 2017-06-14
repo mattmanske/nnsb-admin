@@ -11,7 +11,8 @@ import modalReducer                     from 'modules/modal/reducer'
 import showsReducer                     from 'modules/shows/reducer'
 import ordersReducer                    from 'modules/orders/reducer'
 import membersReducer                   from 'modules/members/reducer'
-import customersReducer from 'modules/customers/reducer'
+import customersReducer                 from 'modules/customers/reducer'
+import downloadsReducer                 from 'modules/downloads/reducer'
 
 //-----------  Definitions  -----------//
 
@@ -49,6 +50,7 @@ export default function createReducer(asyncReducers){
     shows     : showsReducer,
     members   : membersReducer,
     customers : customersReducer,
+    downloads : downloadsReducer,
     browser   : createResponsiveStateReducer(null, { initialMediaType: initialMediaType() }),
     ...asyncReducers,
   })

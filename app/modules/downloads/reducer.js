@@ -2,7 +2,7 @@
 
 import { AUTH }      from 'modules/auth/actions'
 
-import { CUSTOMERS } from './actions'
+import { DOWNLOADS } from './actions'
 
 //-----------  Definitions  -----------//
 
@@ -15,7 +15,7 @@ const initialState = {
 
 //-----------  Reducers  -----------//
 
-function customersReducer(state = initialState, action){
+function downloadsReducer(state = initialState, action){
   let isWatching = true, isLoading = true
   let { data, error } = action
 
@@ -24,10 +24,10 @@ function customersReducer(state = initialState, action){
     case AUTH.SYNC:
       return { ...state, isLoading, isWatching }
 
-    case CUSTOMERS.SUCCESS:
+    case DOWNLOADS.SUCCESS:
       return { ...initialState, data, isWatching }
 
-    case CUSTOMERS.FAILURE:
+    case DOWNLOADS.FAILURE:
       return { ...initialState, error, isWatching }
 
     default:
@@ -37,4 +37,4 @@ function customersReducer(state = initialState, action){
 
 //-----------  Exports  -----------//
 
-export default customersReducer
+export default downloadsReducer
