@@ -7,7 +7,7 @@ import { DOWNLOADS } from './actions'
 //-----------  Definitions  -----------//
 
 const initialState = {
-  data       : [],
+  data       : {},
   error      : null,
   isLoading  : false,
   isWatching : false,

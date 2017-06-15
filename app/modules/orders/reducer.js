@@ -10,7 +10,7 @@ import { ORDERS } from './actions'
 //-----------  Definitions  -----------//
 
 const initialState = {
-  data      : [],
+  data      : {},
   error     : null,
   hasMore   : false,
   isLoading : false,

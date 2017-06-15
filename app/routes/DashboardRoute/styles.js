@@ -20,11 +20,11 @@ const Page = styled(PageWrapper)`
 `
 
 const Albums = styled.div`
-  flex: 1 1 50%;
+  flex: 1 1 33%;
 `
 
 const Album = styled.div`
-  clear: both; 
+  clear: both;
 
   img {
     float  : left;
@@ -35,7 +35,7 @@ const Album = styled.div`
 `
 
 const Customers = styled.div`
-  flex: 1 1 50%;
+  flex: 1 1 67%;
 `
 
 //-----------  Exports  ----------- */

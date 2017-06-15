@@ -47,7 +47,7 @@ class DashboardRoute extends React.Component {
     const { downloads } = this.props
     const collection = downloads[id] && downloads[id][type]
 
-    if (!collection || !collection.buffer) return 0
+    if (!collection) return 0
 
     return keys(collection).length + parseInt(collection.buffer) - 1
   }

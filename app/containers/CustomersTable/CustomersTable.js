@@ -31,17 +31,22 @@ const CustomersTable = (props) => {
         key='joined'
         title='Joined'
         dataIndex='created_at'
-        render={val => val ? moment(val).format('M.D.YY') : '-'}
+        render={val => val ? moment(val).fromNow() : '-'}
       />
       <Customers.Column
         key='name'
         title='Name'
         dataIndex='name'
-        render={(val, record) => (
-          <span>
-            {record.name}
-            <small> {record.email}</small>
-          </span>
+        render={name => (
+          <strong>{name}</strong>
+        )}
+      />
+      <Customers.Column
+        key='email'
+        title='Email'
+        dataIndex='email'
+        render={email => (
+          <small><a href={`mailto:${email}`} target='_blank'>{email}</a></small>
         )}
       />
       <Customers.Column
@@ -49,7 +54,7 @@ const CustomersTable = (props) => {
         title='Orders'
         dataIndex='orders'
         render={(val) => {
-          if (!val) return false
+          if (!val) return (<small>-</small>)
           const total = reduce(val, (sum, val) => sum += parseInt(val.amount)/100, 0)
           return <Money value={total} />
         }}
@@ -59,7 +64,7 @@ const CustomersTable = (props) => {
         title='Donations'
         dataIndex='donations'
         render={(val) => {
-          if (!val) return false
+          if (!val) return (<small>-</small>)
           const total = reduce(val, (sum, val) => sum += parseInt(val.amount)/100, 0)
           return <Money value={total} />
         }}
