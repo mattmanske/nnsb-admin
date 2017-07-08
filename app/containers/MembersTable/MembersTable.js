@@ -2,8 +2,6 @@
 
 import Members              from './styles'
 
-import sortBy               from 'lodash/sortBy'
-
 import React, { PropTypes } from 'react'
 import { Icon, Button }     from 'antd'
 
@@ -11,8 +9,6 @@ import { Icon, Button }     from 'antd'
 
 const MembersTable = (props) => {
   const { data, error, isLoading, isWatching } = props.members
-
-  const members = sortBy(data, ['primary', 'name'])
 
   function editIcon(val, record){
     return <a onClick={() => props.memberModal(record)}><Icon type='ellipsis' /></a>
@@ -25,7 +21,7 @@ const MembersTable = (props) => {
       <Members.List
         size='small'
         pagination={false}
-        dataSource={members}
+        dataSource={data}
       >
         <Members.Column
           key='key'

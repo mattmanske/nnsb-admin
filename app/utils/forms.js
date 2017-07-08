@@ -21,7 +21,7 @@ const isEmail = (val) => val && validator.isEmail(val)
 
 const isPhone = (val) => val && (val.replace(/[^\d]/g, '').length == 10)
 
-const isNumber = (val) => val && Number.isInteger(parseInt(val)) 
+const isNumber = (val) => Number.isInteger(parseInt(val)) 
 
 const isPassword = (val) => val && val.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/)
 

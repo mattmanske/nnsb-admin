@@ -21,7 +21,7 @@ function membersReducer(state = initialState, action){
   let isWatching = true, isLoading = true
   let { data, error } = action
 
-  data = flatMap(data, (show, key) => Object.assign({ key }, show))
+  data = flatMap(data, (member, key) => Object.assign({ key }, member))
 
   switch (action.type){
 
