@@ -17,7 +17,7 @@ module.exports = (options) => ({
     loaders: [{
       test    : /\.(js|jsx)$/, // Transform all .js files required somewhere with Babel
       loader  : 'babel-loader',
-      exclude : /node_modules/,
+      exclude : /node_modules\/(?!(redux-saga-firebase)\/).*/,
       query   : Object.assign({}, options.babelQuery, {
         plugins: [
           ['import', [{ 'libraryName': 'antd', 'style': 'css' }]],
